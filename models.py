@@ -13,17 +13,17 @@ class User:
             'nome': self.nome,
             'email': self.email,
             'senha': self.senha,
-            'foto': self.foto,
+            'foto': self.pfp,
             'cpf': self.cpf,
         }
 
     @classmethod
     def from_dict(cls, data):
         return cls(
-            nome=data['username'],
+            nome=data['nome'],
             email=data['email'],
             senha=data['senha'],
-            foto=data.get('foto'),
+            pfp=data.get('pfp'),
             cpf=data['cpf'],
             user_id=data.get('id')
         )
