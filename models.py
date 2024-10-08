@@ -13,7 +13,7 @@ class User:
             'nome': self.nome,
             'email': self.email,
             'senha': self.senha,
-            'foto': self.pfp,
+            'pfp': self.pfp,
             'cpf': self.cpf,
         }
 
@@ -29,12 +29,14 @@ class User:
         )
 
 class Report:
-    def __init__(self, latitude, longitude, titulo, conteudo, data, report_id=None):
+    def __init__(self, latitude, longitude, titulo, conteudo, imagem, aceito, data, report_id=None):
         self.id = report_id
         self.latitude = latitude
         self.longitude = longitude
         self.titulo = titulo
         self.conteudo = conteudo
+        self.imagem = imagem
+        self.aceito = aceito
         self.data = data
 
     def to_dict(self):
@@ -44,6 +46,8 @@ class Report:
             'longitude': self.longitude,
             'titulo': self.titulo,
             'conteudo': self.conteudo,
+            'imagem': self.imagem,
+            'aceito': self.aceito,
             'data': self.data
         }
 
@@ -54,6 +58,8 @@ class Report:
             longitude=data['longitude'],
             titulo=data['titulo'],
             conteudo=data['conteudo'],
+            imagem=data['imagem'],
+            aceito=data['aceito'],
             data=data['data'],
             report_id=data.get('id')
         )

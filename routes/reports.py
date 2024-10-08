@@ -15,8 +15,8 @@ def novo_report():
     
     try:
         cursor.execute(
-            "INSERT INTO reports (latitude, longitude, titulo, conteudo, data) VALUES (%s, %s, %s, %s, %s)",
-            (report.latitude, report.longitude, report.titulo, report.conteudo, report.data)
+            "INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)",
+            (report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)
         )
         conn.commit()
         
@@ -82,11 +82,14 @@ def update_report(id):
             return jsonify({'message': 'Report not found'}), 404
 
         # Atualizar o report
-        cursor.execute("""
-            UPDATE Report 
-            SET latitude = %s, longitude = %s, titulo = %s, conteudo = %s, data = %s 
-            WHERE id = %s
-        """, (updated_report.latitude, updated_report.longitude, updated_report.titulo, updated_report.conteudo, updated_report.data, id))
+        cursor.execute(
+            """
+                UPDATE Report 
+                SET titulo = %s, conteudo = %s, data = %s, aceito= %s
+                WHERE id = %s
+            """, 
+            (updated_report.titulo, updated_report.conteudo, updated_report.data, updated_report.aceito, id)
+        )
         
         conn.commit()
 

@@ -36,6 +36,9 @@ def login():
     email = data.get('email')
     senha = data.get('senha')
 
+    print(email)
+    print(senha)
+
     conn = criar_conexao()
     cursor = conn.cursor(dictionary=True)
     
@@ -45,13 +48,13 @@ def login():
 
         if user:
             if bcrypt.checkpw(senha.encode('utf-8'), user['senha'].encode('utf-8')):
-                return jsonify({'content': user}), 200
+                return jsonify({'message': 'Usuario Encontrado', 'content': user}), 200
             else:
-                return jsonify({'message': 'Invalid password'}), 401
+                return jsonify({'message': 'Senha Incorreta'}), 401
         else:
-            return jsonify({'message': 'User not found'}), 404
+            return jsonify({'message': 'Email ou Senha incorretos'}), 404
     except Exception as err:
-        return jsonify({'error': str(err)}), 500
+        return jsonify({'message': str(err)}), 500
     finally:
         cursor.close()
         fechar_conexao(conn)

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from conexao import criar_conexao, fechar_conexao
 from models import Petition
 
-petitions_bp = Blueprint('abaixo_assinado', __name__)
+petitions_bp = Blueprint('peticoes', __name__)
 
 @petitions_bp.route('/create', methods=['POST'])
 def nova_peticao():
@@ -32,11 +32,11 @@ def list_peticoes():
     cursor = conn.cursor(dictionary=True)
     
     try:
-        cursor.execute("SELECT * FROM peticoes")
+        cursor.execute("select * from peticoes")
         petitions = cursor.fetchall()
         
         if petitions:
-            return jsonify({'content': petitions}), 200
+            return jsonify({'message': 'Found', 'content': petitions}), 200
         else:
             return jsonify({'message': 'No petitions found'}), 404
     except Exception as err:
