@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from conexao import criar_conexao, fechar_conexao
+from psycopg2.extras import RealDictCursor
 
 from models import Report
 
@@ -30,7 +31,7 @@ def novo_report():
 @reports_bp.route('/list', methods=['GET'])
 def list_reports():
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
         cursor.execute("SELECT * FROM reports")
@@ -49,7 +50,7 @@ def list_reports():
 @reports_bp.route('/get_by_user/<int:user_id>', methods=['GET'])
 def get_reports_by_user(user_id):
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
         cursor.execute("SELECT * FROM reports WHERE user_id = %s", (user_id,))

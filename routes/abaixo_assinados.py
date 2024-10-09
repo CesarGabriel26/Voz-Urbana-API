@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from conexao import criar_conexao, fechar_conexao
 from models import Petition
+from psycopg2.extras import RealDictCursor
 
 petitions_bp = Blueprint('peticoes', __name__)
 
@@ -29,7 +30,7 @@ def nova_peticao():
 @petitions_bp.route('/list', methods=['GET'])
 def list_peticoes():
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
         cursor.execute("select * from peticoes")
@@ -48,7 +49,7 @@ def list_peticoes():
 @petitions_bp.route('/get_by_user/<int:user_id>', methods=['GET'])
 def get_petitions_by_user(user_id):
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
         cursor.execute("SELECT * FROM peticoes WHERE user_id = %s", (user_id,))
@@ -123,7 +124,7 @@ def delete_peticao(id):
 @petitions_bp.route('/check_signatures/<int:id>', methods=['GET'])
 def check_signatures(id):
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
         cursor.execute("SELECT signatures, required_signatures FROM peticoes WHERE id = %s", (id,))

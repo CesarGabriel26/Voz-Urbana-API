@@ -152,6 +152,30 @@
         "documentation": {}
     },
     {
+        "label": "RealDictCursor",
+        "importPath": "psycopg2.extras",
+        "description": "psycopg2.extras",
+        "isExtraImport": true,
+        "detail": "psycopg2.extras",
+        "documentation": {}
+    },
+    {
+        "label": "RealDictCursor",
+        "importPath": "psycopg2.extras",
+        "description": "psycopg2.extras",
+        "isExtraImport": true,
+        "detail": "psycopg2.extras",
+        "documentation": {}
+    },
+    {
+        "label": "RealDictCursor",
+        "importPath": "psycopg2.extras",
+        "description": "psycopg2.extras",
+        "isExtraImport": true,
+        "detail": "psycopg2.extras",
+        "documentation": {}
+    },
+    {
         "label": "bcrypt",
         "kind": 6,
         "isExtraImport": true,
@@ -185,12 +209,37 @@
         "documentation": {}
     },
     {
-        "label": "mysql.connector",
+        "label": "petitions_bp",
+        "importPath": "routes.abaixo_assinados",
+        "description": "routes.abaixo_assinados",
+        "isExtraImport": true,
+        "detail": "routes.abaixo_assinados",
+        "documentation": {}
+    },
+    {
+        "label": "psycopg2",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "mysql.connector",
-        "description": "mysql.connector",
-        "detail": "mysql.connector",
+        "importPath": "psycopg2",
+        "description": "psycopg2",
+        "detail": "psycopg2",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
         "documentation": {}
     },
     {
@@ -207,7 +256,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def list_peticoes():\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes\")\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found'}), 404",
+        "peekOfCode": "def list_peticoes():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"select * from peticoes\")\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'message': 'Found', 'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found'}), 404",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -216,7 +265,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def get_petitions_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes WHERE user_id = %s\", (user_id,))\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found for this user'}), 404",
+        "peekOfCode": "def get_petitions_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes WHERE user_id = %s\", (user_id,))\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found for this user'}), 404",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -243,7 +292,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def check_signatures(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT signatures, required_signatures FROM peticoes WHERE id = %s\", (id,))\n        petition = cursor.fetchone()\n        if petition:\n            if petition['signatures'] >= petition['required_signatures']:\n                return jsonify({'message': 'Petition has reached the required number of signatures'}), 200\n            else:",
+        "peekOfCode": "def check_signatures(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT signatures, required_signatures FROM peticoes WHERE id = %s\", (id,))\n        petition = cursor.fetchone()\n        if petition:\n            if petition['signatures'] >= petition['required_signatures']:\n                return jsonify({'message': 'Petition has reached the required number of signatures'}), 200\n            else:",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -252,7 +301,7 @@
         "kind": 5,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "petitions_bp = Blueprint('abaixo_assinado', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)\",",
+        "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)\",",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -261,7 +310,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, data) VALUES (%s, %s, %s, %s, %s)\",\n            (report.latitude, report.longitude, report.titulo, report.conteudo, report.data)\n        )",
+        "peekOfCode": "def novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)\",\n            (report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)\n        )",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -270,7 +319,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def list_reports():\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT * FROM reports\")\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'not found'}), 404",
+        "peekOfCode": "def list_reports():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports\")\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'not found'}), 404",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -279,7 +328,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def get_reports_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT * FROM reports WHERE user_id = %s\", (user_id,))\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'No reports found for this user'}), 404",
+        "peekOfCode": "def get_reports_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports WHERE user_id = %s\", (user_id,))\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'No reports found for this user'}), 404",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -306,7 +355,7 @@
         "kind": 5,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "reports_bp = Blueprint('reports', __name__)\n@reports_bp.route('/create', methods=['POST'])\ndef novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, data) VALUES (%s, %s, %s, %s, %s)\",",
+        "peekOfCode": "reports_bp = Blueprint('reports', __name__)\n@reports_bp.route('/create', methods=['POST'])\ndef novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)\",",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -315,7 +364,7 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def new_usuario():\n    data = request.get_json()\n    user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    hashed_password = bcrypt.hashpw(user.senha.encode('utf-8'), bcrypt.gensalt())\n    try:\n        cursor.execute(\n            \"INSERT INTO usuarios (nome, email, senha, pfp, cpf) VALUES (%s, %s, %s, %s, %s)\",\n            (user.nome, user.email, hashed_password, user.pfp, user.cpf)",
+        "peekOfCode": "def new_usuario():\n    data = request.get_json()\n    user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    hashed_password = bcrypt.hashpw(user.senha.encode('utf-8'), bcrypt.gensalt())\n    try:\n        cursor.execute(\n            \"INSERT INTO usuarios (nome, email, senha, pfp, cpf) VALUES (%s, %s, %s, %s, %s)\",\n            (user.nome, user.email, hashed_password.decode('utf-8'), user.pfp, user.cpf)",
         "detail": "routes.usuario",
         "documentation": {}
     },
@@ -324,7 +373,7 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def login():\n    data = request.get_json()\n    email = data.get('email')\n    senha = data.get('senha')\n    conn = criar_conexao()\n    cursor = conn.cursor(dictionary=True)\n    try:\n        cursor.execute(\"SELECT * FROM usuarios WHERE email = %s\", (email,))\n        user = cursor.fetchone()\n        if user:",
+        "peekOfCode": "def login():\n    data = request.get_json()\n    email = data.get('email')\n    senha = data.get('senha')\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário\n    try:\n        cursor.execute(\"SELECT * FROM usuarios WHERE email = %s\", (email,))\n        user = cursor.fetchone()\n        if user:",
         "detail": "routes.usuario",
         "documentation": {}
     },
@@ -369,7 +418,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":\n    app.run(port=5000, host=\"localhost\", debug=True)",
+        "peekOfCode": "def home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":\n    app.run()",
         "detail": "app",
         "documentation": {}
     },
@@ -378,7 +427,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\n# app.register_blueprint(abaixo_assinado_bp, url_prefix='/abaixo_assinado')\n@app.route('/')\ndef home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\n@app.route('/')\ndef home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":",
         "detail": "app",
         "documentation": {}
     },
@@ -387,7 +436,7 @@
         "kind": 2,
         "importPath": "conexao",
         "description": "conexao",
-        "peekOfCode": "def criar_conexao():\n    return mysql.connector.connect(\n        host = \"localhost\",\n        user = \"root\",\n        password = \"1234\",\n        database = \"VozUrbana\"\n    )\ndef fechar_conexao(conexao):\n    if conexao:\n        conexao.close()",
+        "peekOfCode": "def criar_conexao():\n    return psycopg2.connect(\n        host=os.getenv(\"POSTGRES_HOST\"),\n        user=os.getenv(\"POSTGRES_USER\"),\n        password=os.getenv(\"POSTGRES_PASSWORD\"),\n        dbname=os.getenv(\"POSTGRES_DATABASE\"),\n        sslmode=\"require\"  # Esse valor é passado diretamente, como no seu URL\n    )\ndef fechar_conexao(conexao):\n    if conexao:",
         "detail": "conexao",
         "documentation": {}
     },
@@ -414,7 +463,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, data, report_id=None):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.data = data\n    def to_dict(self):\n        return {",
+        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, imagem, aceito, data, report_id=None):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.imagem = imagem\n        self.aceito = aceito\n        self.data = data",
         "detail": "models",
         "documentation": {}
     },

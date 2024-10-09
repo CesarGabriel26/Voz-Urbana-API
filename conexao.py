@@ -1,11 +1,16 @@
-import mysql.connector
+import psycopg2
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def criar_conexao():
-    return mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = "1234",
-        database = "VozUrbana"
+    return psycopg2.connect(
+        host=os.getenv("POSTGRES_HOST"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD"),
+        dbname=os.getenv("POSTGRES_DATABASE"),
+        sslmode="require"  # Esse valor é passado diretamente, como no seu URL
     )
 
 def fechar_conexao(conexao):

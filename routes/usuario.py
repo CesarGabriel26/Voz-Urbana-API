@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from conexao import criar_conexao, fechar_conexao
+from psycopg2.extras import RealDictCursor
 import bcrypt
 
 from models import User
@@ -19,7 +20,7 @@ def new_usuario():
     try:
         cursor.execute(
             "INSERT INTO usuarios (nome, email, senha, pfp, cpf) VALUES (%s, %s, %s, %s, %s)",
-            (user.nome, user.email, hashed_password, user.pfp, user.cpf)
+            (user.nome, user.email, hashed_password.decode('utf-8'), user.pfp, user.cpf)
         )
         conn.commit()
         
@@ -36,11 +37,8 @@ def login():
     email = data.get('email')
     senha = data.get('senha')
 
-    print(email)
-    print(senha)
-
     conn = criar_conexao()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário
     
     try:
         cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
