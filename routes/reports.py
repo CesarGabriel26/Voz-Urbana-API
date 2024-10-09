@@ -9,6 +9,11 @@ reports_bp = Blueprint('reports', __name__)
 @reports_bp.route('/create', methods=['POST'])
 def novo_report():
     data = request.get_json()
+
+    # Verifique se user_id está presente
+    if 'user_id' not in data:
+        return jsonify({'error': 'user_id is required'}), 400
+
     report = Report.from_dict(data)
     
     conn = criar_conexao()
@@ -16,8 +21,8 @@ def novo_report():
     
     try:
         cursor.execute(
-            "INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)",
-            (report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)
+            "INSERT INTO reports (user_id, latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (report.user_id, report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)
         )
         conn.commit()
         

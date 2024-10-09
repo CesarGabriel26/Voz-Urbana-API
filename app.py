@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+import dotenv
 
 from routes.usuario import usuarios_bp
 from routes.reports import reports_bp
@@ -8,7 +9,7 @@ from routes.imagem import imagem_bp
 
 app = Flask(__name__)
 CORS(app)
-
+dotenv.load_dotenv()
 #   
 
 app.register_blueprint(usuarios_bp, url_prefix='/usuarios')

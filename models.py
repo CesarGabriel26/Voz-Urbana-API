@@ -29,7 +29,7 @@ class User:
         )
 
 class Report:
-    def __init__(self, latitude, longitude, titulo, conteudo, imagem, aceito, data, report_id=None):
+    def __init__(self, latitude, longitude, titulo, conteudo, imagem, data, user_id, report_id=None, aceito=False):
         self.id = report_id
         self.latitude = latitude
         self.longitude = longitude
@@ -38,6 +38,7 @@ class Report:
         self.imagem = imagem
         self.aceito = aceito
         self.data = data
+        self.user_id = user_id  # Adicionando o user_id
 
     def to_dict(self):
         return {
@@ -48,7 +49,8 @@ class Report:
             'conteudo': self.conteudo,
             'imagem': self.imagem,
             'aceito': self.aceito,
-            'data': self.data
+            'data': self.data,
+            'user_id': self.user_id  # Incluindo user_id no dicionário
         }
 
     @classmethod
@@ -59,9 +61,10 @@ class Report:
             titulo=data['titulo'],
             conteudo=data['conteudo'],
             imagem=data['imagem'],
-            aceito=data['aceito'],
+            aceito=data.get('aceito', False),
             data=data['data'],
-            report_id=data.get('id')
+            report_id=data.get('id'),
+            user_id=data['user_id']  # Capturando user_id do dicionário
         )
 
 class Petition:

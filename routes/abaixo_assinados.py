@@ -39,7 +39,7 @@ def list_peticoes():
         if petitions:
             return jsonify({'message': 'Found', 'content': petitions}), 200
         else:
-            return jsonify({'message': 'No petitions found'}), 404
+            return jsonify({'message': 'No petitions found', 'content': []}), 200
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:

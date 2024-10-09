@@ -200,21 +200,21 @@
         "documentation": {}
     },
     {
-        "label": "requests",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "requests",
-        "description": "requests",
-        "detail": "requests",
-        "documentation": {}
-    },
-    {
         "label": "os",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "os",
         "description": "os",
         "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "vercel_blob",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "vercel_blob",
+        "description": "vercel_blob",
+        "detail": "vercel_blob",
         "documentation": {}
     },
     {
@@ -232,6 +232,23 @@
         "description": "flask_cors",
         "isExtraImport": true,
         "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "dotenv",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
         "documentation": {}
     },
     {
@@ -276,14 +293,6 @@
         "documentation": {}
     },
     {
-        "label": "load_dotenv",
-        "importPath": "dotenv",
-        "description": "dotenv",
-        "isExtraImport": true,
-        "detail": "dotenv",
-        "documentation": {}
-    },
-    {
         "label": "nova_peticao",
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
@@ -297,7 +306,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def list_peticoes():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"select * from peticoes\")\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'message': 'Found', 'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found'}), 404",
+        "peekOfCode": "def list_peticoes():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"select * from peticoes\")\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'message': 'Found', 'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found', 'content': []}), 200",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -347,20 +356,11 @@
         "documentation": {}
     },
     {
-        "label": "enviar_imagem_blob",
-        "kind": 2,
-        "importPath": "routes.imagem",
-        "description": "routes.imagem",
-        "peekOfCode": "def enviar_imagem_blob(imagem):\n    url_blob = os.getenv(\"BLOB_URL\")  # A URL do seu Blob Vercel\n    headers = {\n        \"Authorization\": f\"Bearer {os.getenv('BLOB_READ_WRITE_TOKEN')}\",  # Use sua chave de API do Blob\n        \"Content-Type\": \"application/octet-stream\"  # Tipo de conteúdo do arquivo\n    }\n    response = requests.post(url_blob, headers=headers, data=imagem)\n    if response.status_code == 200:\n        return response.json().get(\"url\")  # Retorna a URL da imagem enviada\n    else:",
-        "detail": "routes.imagem",
-        "documentation": {}
-    },
-    {
         "label": "upload_imagem",
         "kind": 2,
         "importPath": "routes.imagem",
         "description": "routes.imagem",
-        "peekOfCode": "def upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"message\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        imagem = arquivo.read()\n        # Enviar a imagem para o Blob e obter a URL\n        url_imagem = enviar_imagem_blob(imagem)\n        return jsonify({\"message\": \"success\", \"content\": url_imagem}), 200\n    except Exception as e:",
+        "peekOfCode": "def upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Obtém o nome do arquivo\n        nome_arquivo = arquivo.filename\n        # Usa o método put da biblioteca vercel_blob para enviar a imagem\n        data_imagem = vercel_blob.put(nome_arquivo, arquivo.read(), {})  # Envia o arquivo para o Blob\n        return jsonify({\"message\": \"success\", \"content\": data_imagem}), 200",
         "detail": "routes.imagem",
         "documentation": {}
     },
@@ -369,7 +369,7 @@
         "kind": 5,
         "importPath": "routes.imagem",
         "description": "routes.imagem",
-        "peekOfCode": "imagem_bp = Blueprint('imagem', __name__)\ndef enviar_imagem_blob(imagem):\n    url_blob = os.getenv(\"BLOB_URL\")  # A URL do seu Blob Vercel\n    headers = {\n        \"Authorization\": f\"Bearer {os.getenv('BLOB_READ_WRITE_TOKEN')}\",  # Use sua chave de API do Blob\n        \"Content-Type\": \"application/octet-stream\"  # Tipo de conteúdo do arquivo\n    }\n    response = requests.post(url_blob, headers=headers, data=imagem)\n    if response.status_code == 200:\n        return response.json().get(\"url\")  # Retorna a URL da imagem enviada",
+        "peekOfCode": "imagem_bp = Blueprint('imagem', __name__)\n@imagem_bp.route('/upload', methods=['POST'])\ndef upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Obtém o nome do arquivo\n        nome_arquivo = arquivo.filename\n        # Usa o método put da biblioteca vercel_blob para enviar a imagem",
         "detail": "routes.imagem",
         "documentation": {}
     },
@@ -378,7 +378,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)\",\n            (report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)\n        )",
+        "peekOfCode": "def novo_report():\n    data = request.get_json()\n    # Verifique se user_id está presente\n    if 'user_id' not in data:\n        return jsonify({'error': 'user_id is required'}), 400\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -423,7 +423,7 @@
         "kind": 5,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "reports_bp = Blueprint('reports', __name__)\n@reports_bp.route('/create', methods=['POST'])\ndef novo_report():\n    data = request.get_json()\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO reports (latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s)\",",
+        "peekOfCode": "reports_bp = Blueprint('reports', __name__)\n@reports_bp.route('/create', methods=['POST'])\ndef novo_report():\n    data = request.get_json()\n    # Verifique se user_id está presente\n    if 'user_id' not in data:\n        return jsonify({'error': 'user_id is required'}), 400\n    report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -495,7 +495,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\napp.register_blueprint(imagem_bp, url_prefix='/imagem')\n@app.route('/')\ndef home():\n    return \"ROTA DE TESTE\"",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\ndotenv.load_dotenv()\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\napp.register_blueprint(imagem_bp, url_prefix='/imagem')\n@app.route('/')\ndef home():",
         "detail": "app",
         "documentation": {}
     },
@@ -531,7 +531,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, imagem, aceito, data, report_id=None):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.imagem = imagem\n        self.aceito = aceito\n        self.data = data",
+        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, imagem, data, user_id, report_id=None, aceito=False):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.imagem = imagem\n        self.aceito = aceito\n        self.data = data",
         "detail": "models",
         "documentation": {}
     },

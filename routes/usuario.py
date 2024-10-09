@@ -52,7 +52,7 @@ def login():
         else:
             return jsonify({'message': 'Email ou Senha incorretos'}), 404
     except Exception as err:
-        return jsonify({'message': str(err)}), 500
+        return jsonify({'error': str(err)}), 500
     finally:
         cursor.close()
         fechar_conexao(conn)
