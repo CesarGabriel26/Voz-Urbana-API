@@ -16,3 +16,5 @@ def criar_conexao():
 def fechar_conexao(conexao):
     if conexao:
         conexao.close()
+
+

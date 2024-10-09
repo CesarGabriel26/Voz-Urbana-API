@@ -72,6 +72,30 @@
         "documentation": {}
     },
     {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Flask",
         "importPath": "flask",
         "description": "flask",
@@ -176,6 +200,24 @@
         "documentation": {}
     },
     {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
         "label": "bcrypt",
         "kind": 6,
         "isExtraImport": true,
@@ -217,6 +259,14 @@
         "documentation": {}
     },
     {
+        "label": "imagem_bp",
+        "importPath": "routes.imagem",
+        "description": "routes.imagem",
+        "isExtraImport": true,
+        "detail": "routes.imagem",
+        "documentation": {}
+    },
+    {
         "label": "psycopg2",
         "kind": 6,
         "isExtraImport": true,
@@ -231,15 +281,6 @@
         "description": "dotenv",
         "isExtraImport": true,
         "detail": "dotenv",
-        "documentation": {}
-    },
-    {
-        "label": "os",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
         "documentation": {}
     },
     {
@@ -303,6 +344,33 @@
         "description": "routes.abaixo_assinados",
         "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)\",",
         "detail": "routes.abaixo_assinados",
+        "documentation": {}
+    },
+    {
+        "label": "enviar_imagem_blob",
+        "kind": 2,
+        "importPath": "routes.imagem",
+        "description": "routes.imagem",
+        "peekOfCode": "def enviar_imagem_blob(imagem):\n    url_blob = os.getenv(\"BLOB_URL\")  # A URL do seu Blob Vercel\n    headers = {\n        \"Authorization\": f\"Bearer {os.getenv('BLOB_READ_WRITE_TOKEN')}\",  # Use sua chave de API do Blob\n        \"Content-Type\": \"application/octet-stream\"  # Tipo de conteúdo do arquivo\n    }\n    response = requests.post(url_blob, headers=headers, data=imagem)\n    if response.status_code == 200:\n        return response.json().get(\"url\")  # Retorna a URL da imagem enviada\n    else:",
+        "detail": "routes.imagem",
+        "documentation": {}
+    },
+    {
+        "label": "upload_imagem",
+        "kind": 2,
+        "importPath": "routes.imagem",
+        "description": "routes.imagem",
+        "peekOfCode": "def upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"message\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        imagem = arquivo.read()\n        # Enviar a imagem para o Blob e obter a URL\n        url_imagem = enviar_imagem_blob(imagem)\n        return jsonify({\"message\": \"success\", \"content\": url_imagem}), 200\n    except Exception as e:",
+        "detail": "routes.imagem",
+        "documentation": {}
+    },
+    {
+        "label": "imagem_bp",
+        "kind": 5,
+        "importPath": "routes.imagem",
+        "description": "routes.imagem",
+        "peekOfCode": "imagem_bp = Blueprint('imagem', __name__)\ndef enviar_imagem_blob(imagem):\n    url_blob = os.getenv(\"BLOB_URL\")  # A URL do seu Blob Vercel\n    headers = {\n        \"Authorization\": f\"Bearer {os.getenv('BLOB_READ_WRITE_TOKEN')}\",  # Use sua chave de API do Blob\n        \"Content-Type\": \"application/octet-stream\"  # Tipo de conteúdo do arquivo\n    }\n    response = requests.post(url_blob, headers=headers, data=imagem)\n    if response.status_code == 200:\n        return response.json().get(\"url\")  # Retorna a URL da imagem enviada",
+        "detail": "routes.imagem",
         "documentation": {}
     },
     {
@@ -427,7 +495,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\n@app.route('/')\ndef home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\napp.register_blueprint(imagem_bp, url_prefix='/imagem')\n@app.route('/')\ndef home():\n    return \"ROTA DE TESTE\"",
         "detail": "app",
         "documentation": {}
     },
