@@ -13,6 +13,10 @@
         {
             "url": "http://voz-urbana-api-cesargabriel26-cesar-gabriels-projects.vercel.app",
             "description": "Servidor De Testes"
+        },
+        {
+            "url": "http://voz-urbana-api.vercel.app",
+            "description": "Servidor De Produção"
         }
     ],
     "paths": {
