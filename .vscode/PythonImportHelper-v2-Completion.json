@@ -209,22 +209,6 @@
         "documentation": {}
     },
     {
-        "label": "TfidfVectorizer",
-        "importPath": "sklearn.feature_extraction.text",
-        "description": "sklearn.feature_extraction.text",
-        "isExtraImport": true,
-        "detail": "sklearn.feature_extraction.text",
-        "documentation": {}
-    },
-    {
-        "label": "KMeans",
-        "importPath": "sklearn.cluster",
-        "description": "sklearn.cluster",
-        "isExtraImport": true,
-        "detail": "sklearn.cluster",
-        "documentation": {}
-    },
-    {
         "label": "bcrypt",
         "kind": 6,
         "isExtraImport": true,
@@ -458,15 +442,6 @@
         "importPath": "routes.reports",
         "description": "routes.reports",
         "peekOfCode": "def delete_report(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o report existe\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        report = cursor.fetchone()\n        if not report:\n            return jsonify({'error': 'Report not found'}), 404\n        # Deletar o report",
-        "detail": "routes.reports",
-        "documentation": {}
-    },
-    {
-        "label": "list_grouped_reports",
-        "kind": 2,
-        "importPath": "routes.reports",
-        "description": "routes.reports",
-        "peekOfCode": "def list_grouped_reports():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports\")\n        reports = cursor.fetchall()\n        if not reports:\n            return jsonify({'message': 'No reports found', 'content': []}), 200\n        # Extraindo títulos e conteúdos para o agrupamento\n        documents = [f\"{report['titulo']} {report['conteudo']}\" for report in reports]",
         "detail": "routes.reports",
         "documentation": {}
     },
