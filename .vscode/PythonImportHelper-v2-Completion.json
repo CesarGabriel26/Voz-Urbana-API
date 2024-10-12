@@ -200,15 +200,6 @@
         "documentation": {}
     },
     {
-        "label": "os",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
-        "documentation": {}
-    },
-    {
         "label": "vercel_blob",
         "kind": 6,
         "isExtraImport": true,
@@ -235,12 +226,38 @@
         "documentation": {}
     },
     {
+        "label": "get_swaggerui_blueprint",
+        "importPath": "flask_swagger_ui",
+        "description": "flask_swagger_ui",
+        "isExtraImport": true,
+        "detail": "flask_swagger_ui",
+        "documentation": {}
+    },
+    {
         "label": "dotenv",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "dotenv",
         "description": "dotenv",
         "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
         "documentation": {}
     },
     {
@@ -366,6 +383,15 @@
         "documentation": {}
     },
     {
+        "label": "delete_imagem",
+        "kind": 2,
+        "importPath": "routes.imagem",
+        "description": "routes.imagem",
+        "peekOfCode": "def delete_imagem(nome_arquivo):\n    try:\n        # Usa o método delete da biblioteca vercel_blob para remover a imagem\n        vercel_blob.delete(nome_arquivo)  # Remove o arquivo do Blob\n        return jsonify({\"message\": \"Imagem deletada com sucesso\"}), 204\n    except Exception as e:\n        return jsonify({\"error\": \"Erro ao deletar a imagem: \" + str(e)}), 500",
+        "detail": "routes.imagem",
+        "documentation": {}
+    },
+    {
         "label": "imagem_bp",
         "kind": 5,
         "importPath": "routes.imagem",
@@ -474,11 +500,11 @@
         "documentation": {}
     },
     {
-        "label": "home",
+        "label": "swagger_json",
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def home():\n    return \"ROTA DE TESTE\"\nif __name__ == \"__main__\":\n    app.run()",
+        "peekOfCode": "def swagger_json():\n    if os.path.exists(\"swagger_spec.json\"):\n        with open(\"swagger_spec.json\", 'r') as json_file:\n            swagger_spec = json.load(json_file)\n            return swagger_spec\n    else:\n        return {}\nif __name__ == \"__main__\":\n    app.run()",
         "detail": "app",
         "documentation": {}
     },
@@ -487,7 +513,34 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\ndotenv.load_dotenv()\n#   \napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')\napp.register_blueprint(petitions_bp, url_prefix='/peticoes')\napp.register_blueprint(imagem_bp, url_prefix='/imagem')\n@app.route('/')\ndef home():",
+        "peekOfCode": "app = Flask(__name__)\nCORS(app)\ndotenv.load_dotenv()\n### Swagger configuration ###\nSWAGGER_URL = '/docs'  # URL para acessar a documentação\nAPI_URL = '/swagger.json'  # Caminho para o arquivo JSON de especificação Swagger\nswaggerui_blueprint = get_swaggerui_blueprint(\n    SWAGGER_URL,  # Swagger UI URL\n    API_URL,  # Swagger arquivo JSON URL\n    config={  # Configurações adicionais do Swagger UI",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "SWAGGER_URL",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "SWAGGER_URL = '/docs'  # URL para acessar a documentação\nAPI_URL = '/swagger.json'  # Caminho para o arquivo JSON de especificação Swagger\nswaggerui_blueprint = get_swaggerui_blueprint(\n    SWAGGER_URL,  # Swagger UI URL\n    API_URL,  # Swagger arquivo JSON URL\n    config={  # Configurações adicionais do Swagger UI\n        'app_name': \"API Voz Urbana\"\n    }\n)\napp.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "API_URL",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "API_URL = '/swagger.json'  # Caminho para o arquivo JSON de especificação Swagger\nswaggerui_blueprint = get_swaggerui_blueprint(\n    SWAGGER_URL,  # Swagger UI URL\n    API_URL,  # Swagger arquivo JSON URL\n    config={  # Configurações adicionais do Swagger UI\n        'app_name': \"API Voz Urbana\"\n    }\n)\napp.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)\napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "swaggerui_blueprint",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "swaggerui_blueprint = get_swaggerui_blueprint(\n    SWAGGER_URL,  # Swagger UI URL\n    API_URL,  # Swagger arquivo JSON URL\n    config={  # Configurações adicionais do Swagger UI\n        'app_name': \"API Voz Urbana\"\n    }\n)\napp.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)\napp.register_blueprint(usuarios_bp, url_prefix='/usuarios')\napp.register_blueprint(reports_bp, url_prefix='/reports')",
         "detail": "app",
         "documentation": {}
     },

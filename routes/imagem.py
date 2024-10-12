@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-import os
 import vercel_blob
 
 
@@ -23,3 +22,13 @@ def upload_imagem():
         
     except Exception as e:
         return jsonify({"error": "Erro ao processar a imagem: " + str(e)}), 500
+
+@imagem_bp.route('/delete/<string:nome_arquivo>', methods=['DELETE'])
+def delete_imagem(nome_arquivo):
+    try:
+        # Usa o método delete da biblioteca vercel_blob para remover a imagem
+        vercel_blob.delete(nome_arquivo)  # Remove o arquivo do Blob
+        
+        return jsonify({"message": "Imagem deletada com sucesso"}), 204
+    except Exception as e:
+        return jsonify({"error": "Erro ao deletar a imagem: " + str(e)}), 500

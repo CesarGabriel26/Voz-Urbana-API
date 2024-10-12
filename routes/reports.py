@@ -129,3 +129,4 @@ def delete_report(id):
     finally:
         cursor.close()
         fechar_conexao(conn)
+

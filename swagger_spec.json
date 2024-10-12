@@ -1,0 +1,1347 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Voz Urbana",
+        "description": "API para gerenciar usuários, petições, relatórios e imagens no Aplicativo e Pagina Web Voz Urbana!",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000",
+            "description": "Servidor Local"
+        },
+        {
+            "url": "http://voz-urbana-api-cesargabriel26-cesar-gabriels-projects.vercel.app",
+            "description": "Servidor De Testes"
+        }
+    ],
+    "paths": {
+        "/usuarios/create": {
+            "post": {
+                "tags": ["usuario"],
+                "summary": "Criar um novo usuário",
+                "description": "Cria um novo usuário com nome, email, senha, CPF e uma foto de perfil (opcional).",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao@email.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senhaSegura123"
+                                    },
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "123.456.789-00"
+                                    },
+                                    "pfp": {
+                                        "type": "string",
+                                        "example": "link_para_foto.jpg"
+                                    }
+                                },
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "senha",
+                                    "cpf"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User added successfully"
+                                        },
+                                        "content": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/login": {
+            "post": {
+                "tags": ["usuario"],
+                "summary": "Login do usuário",
+                "description": "Realiza o login de um usuário com email e senha.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao.silva@example.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "senha_segura"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "senha"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Login realizado com sucesso",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Usuario Encontrado"
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "token_de_autenticacao"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "401": {
+                            "description": "Senha incorreta",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Senha Incorreta"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "Usuário não encontrado",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Email ou Senha incorretos"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "500": {
+                            "description": "Erro no servidor",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "Detalhes do erro"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/update/{id}": {
+            "put": {
+                "tags": ["usuario"],
+                "summary": "Atualizar um usuário",
+                "description": "Atualiza os dados de um usuário existente pelo ID.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do usuário a ser atualizado",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao.silva@example.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "example": "nova_senha_segura"
+                                    },
+                                    "pfp": {
+                                        "type": "string",
+                                        "example": "nova_url_da_foto_de_perfil"
+                                    },
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "123.456.789-00"
+                                    }
+                                },
+                                "required": [
+                                    "nome",
+                                    "email",
+                                    "cpf"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Usuário atualizado com sucesso",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string",
+                                                "example": "User updated successfully"
+                                            },
+                                            "content": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "Usuário não encontrado",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string",
+                                                "example": "User not found"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "500": {
+                            "description": "Erro no servidor",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "Detalhes do erro"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/usuarios/delete/{id}": {
+            "delete": {
+                "tags": ["usuario"],
+                "summary": "Deletar um usuário",
+                "description": "Remove um usuário da base de dados pelo ID fornecido.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do usuário a ser deletado.",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário deletado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        
+        "/reports/create": {
+            "post": {
+                "tags": ["report"],
+                "summary": "Criar um novo report",
+                "description": "Adiciona um novo report à base de dados.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": -23.550520
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": -46.633308
+                                    },
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título do Report"
+                                    },
+                                    "conteudo": {
+                                        "type": "string",
+                                        "example": "Conteúdo do Report"
+                                    },
+                                    "imagem": {
+                                        "type": "string",
+                                        "example": "url_da_imagem.jpg"
+                                    },
+                                    "data": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-10-11T12:00:00Z"
+                                    }
+                                },
+                                "required": ["user_id", "titulo", "conteudo"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Report adicionado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report added successfully"
+                                        },
+                                        "content": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro de requisição: user_id é obrigatório",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "user_id is required"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/list": {
+            "get": {
+                "tags": ["report"],
+                "summary": "Listar todos os reports",
+                "description": "Retorna uma lista de todos os reports na base de dados.",
+                "responses": {
+                    "200": {
+                        "description": "Lista de reports retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/get_by_user/{user_id}": {
+            "get": {
+                "tags": ["report"],
+                "summary": "Obter reports por usuário",
+                "description": "Retorna todos os reports de um usuário específico pelo ID.",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do usuário para obter os reports.",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reports encontrados para o usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum report encontrado para este usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No reports found for this user"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/update/{id}": {
+            "put": {
+                "tags": ["report"],
+                "summary": "Atualizar um report",
+                "description": "Atualiza um report existente pelo ID.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do report a ser atualizado.",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "Título Atualizado"
+                                    },
+                                    "conteudo": {
+                                        "type": "string",
+                                        "example": "Conteúdo Atualizado"
+                                    },
+                                    "data": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-10-11T12:00:00Z"
+                                    },
+                                    "aceito": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "required": ["titulo", "conteudo"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Report atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report updated successfully"
+                                        },
+                                        "content": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Report não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reports/delete/{id}": {
+            "delete": {
+                "tags": ["report"],
+                "summary": "Deletar um report",
+                "description": "Remove um report da base de dados pelo ID.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do report a ser deletado.",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Report deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Report não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/imagem/upload": {
+            "post": {
+                "tags": ["imagem"],
+                "summary": "Upload de uma imagem",
+                "description": "Faz o upload de uma imagem para o Blob.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "imagem": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Arquivo da imagem a ser enviada."
+                                    }
+                                },
+                                "required": ["imagem"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Imagem enviada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "content": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Nenhuma imagem fornecida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Nenhuma imagem fornecida"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar a imagem",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a imagem: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/imagem/delete/{nome_arquivo}": {
+            "delete": {
+                "tags": ["imagem"],
+                "summary": "Deletar uma imagem",
+                "description": "Remove uma imagem do Blob pelo nome do arquivo.",
+                "parameters": [
+                    {
+                        "name": "nome_arquivo",
+                        "in": "path",
+                        "required": true,
+                        "description": "Nome da imagem a ser deletada.",
+                        "schema": {
+                            "type": "string",
+                            "example": "imagem_exemplo.jpg"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Imagem deletada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro ao deletar a imagem",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao deletar a imagem: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        
+        "/petitions/create": {
+            "post": {
+                "tags": ["abaixo-assinados"],
+                "summary": "Criar uma nova petição",
+                "description": "Cria uma nova petição com os dados fornecidos.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "description": "ID do usuário que cria a petição."
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Título da petição."
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Conteúdo da petição."
+                                    },
+                                    "signatures": {
+                                        "type": "integer",
+                                        "description": "Número atual de assinaturas."
+                                    },
+                                    "required_signatures": {
+                                        "type": "integer",
+                                        "description": "Número necessário de assinaturas para a petição ser considerada válida."
+                                    }
+                                },
+                                "required": ["user_id", "title", "content", "required_signatures"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Petição criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Petition created successfully"
+                                        },
+                                        "content": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar a petição",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a petição: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/petitions/list": {
+            "get": {
+                "tags": ["abaixo-assinados"],
+                "summary": "Listar todas as petições",
+                "description": "Retorna uma lista de todas as petições disponíveis.",
+                "responses": {
+                    "200": {
+                        "description": "Lista de petições encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Found"
+                                        },
+                                        "content": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao listar as petições",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/petitions/get_by_user/{user_id}": {
+            "get": {
+                "tags": ["abaixo-assinados"],
+                "summary": "Obter petições por usuário",
+                "description": "Retorna as petições criadas por um usuário específico.",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID do usuário para filtrar as petições.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Petições encontradas para o usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "content": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhuma petição encontrada para o usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No petitions found for this user"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao obter as petições do usuário",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a solicitação: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/petitions/update/{id}": {
+            "put": {
+                "tags": ["abaixo-assinados"],
+                "summary": "Atualizar uma petição existente",
+                "description": "Atualiza os dados de uma petição com base no ID fornecido.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da petição a ser atualizada.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "description": "ID do usuário que cria a petição."
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Título da petição."
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Conteúdo da petição."
+                                    },
+                                    "signatures": {
+                                        "type": "integer",
+                                        "description": "Número atual de assinaturas."
+                                    },
+                                    "required_signatures": {
+                                        "type": "integer",
+                                        "description": "Número necessário de assinaturas para a petição ser considerada válida."
+                                    }
+                                },
+                                "required": ["user_id", "title", "content", "required_signatures"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Petição atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Petition updated successfully"
+                                        },
+                                        "content": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Petição não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Petition not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao atualizar a petição",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a petição: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/petitions/delete/{id}": {
+            "delete": {
+                "tags": ["abaixo-assinados"],
+                "summary": "Deletar uma petição existente",
+                "description": "Remove uma petição com base no ID fornecido.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID da petição a ser deletada.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Petição deletada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Petition deleted successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Petição não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Petition not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao deletar a petição",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar a petição: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "example": "João Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "joao@email.com"
+                    },
+                    "cpf": {
+                        "type": "string",
+                        "example": "123.456.789-00"
+                    },
+                    "pfp": {
+                        "type": "string",
+                        "example": "link_para_foto.jpg"
+                    }
+                }
+            },
+            "Report": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "example": -23.5505
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "example": -46.6333
+                    },
+                    "titulo": {
+                        "type": "string",
+                        "example": "Problema na Rua X"
+                    },
+                    "conteudo": {
+                        "type": "string",
+                        "example": "Há um buraco na rua que precisa ser consertado."
+                    },
+                    "imagem": {
+                        "type": "string",
+                        "example": "url_da_imagem.jpg"
+                    },
+                    "aceito": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "data": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-11T12:00:00Z"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },            
+            "Petition": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Salvar o Parque Nacional"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Precisamos proteger a biodiversidade do parque nacional."
+                    },
+                    "signatures": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "required_signatures": {
+                        "type": "integer",
+                        "example": 100
+                    }
+                }
+            }
+        }
+    }
+}
