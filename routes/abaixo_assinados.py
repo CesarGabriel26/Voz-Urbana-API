@@ -58,7 +58,7 @@ def get_petitions_by_user(user_id):
         if petitions:
             return jsonify({'content': petitions}), 200
         else:
-            return jsonify({'message': 'No petitions found for this user'}), 404
+            return jsonify({'message': 'No petitions found for this user'}), 200
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
@@ -79,7 +79,7 @@ def update_peticao(id):
         existing_petition = cursor.fetchone()
 
         if not existing_petition:
-            return jsonify({'message': 'Petition not found'}), 404
+            return jsonify({'error': 'Petition not found'}), 404
 
         # Atualizar a petição
         cursor.execute("""
@@ -108,7 +108,7 @@ def delete_peticao(id):
         petition = cursor.fetchone()
 
         if not petition:
-            return jsonify({'message': 'Petition not found'}), 404
+            return jsonify({'error': 'Petition not found'}), 404
 
         # Deletar a petição
         cursor.execute("DELETE FROM peticoes WHERE id = %s", (id,))
@@ -136,11 +136,13 @@ def check_signatures(id):
             else:
                 return jsonify({
                     'message': 'Petition has not yet reached the required number of signatures',
-                    'current_signatures': petition['signatures'],
-                    'required_signatures': petition['required_signatures']
+                    'content' : {
+                        'current_signatures': petition['signatures'],
+                        'required_signatures': petition['required_signatures']
+                    }
                 }), 200
         else:
-            return jsonify({'message': 'Petition not found'}), 404
+            return jsonify({'error': 'Petition not found'}), 404
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:

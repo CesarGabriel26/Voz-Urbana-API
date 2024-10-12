@@ -43,7 +43,7 @@ def login():
         user_data  = cursor.fetchone()
 
         if user_data :
-            if bcrypt.checkpw(senha.encode('utf-8'), user_data ['senha'].encode('utf-8')):
+            if bcrypt.checkpw(senha.encode('utf-8'), user_data['senha'].encode('utf-8')):
                 user = User.from_dict(user_data )
                 token = user.gerar_token()
                 
@@ -51,14 +51,41 @@ def login():
             
             else:
                 
-                return jsonify({'message': 'Senha Incorreta'}), 401
+                return jsonify({'error': 'Senha Incorreta'}), 401
         else:
-            return jsonify({'message': 'Email ou Senha incorretos'}), 404
+            return jsonify({'error': 'Email ou Senha incorretos'}), 404
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
         cursor.close()
         fechar_conexao(conn)
+
+@usuarios_bp.route('/passwordCheck/<int:id>', methods=['POST'])
+def passwordCheck(id):
+    data = request.get_json()
+    senha = data.get('senha')
+
+    conn = criar_conexao()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário
+    
+    try:
+        cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+        user_data  = cursor.fetchone()
+
+        if user_data :
+            if bcrypt.checkpw(senha.encode('utf-8'), user_data['senha'].encode('utf-8')):
+                return jsonify({'message': 'Senha Correta', 'content': True}), 200
+            
+            else:
+                return jsonify({'error': 'Senha Incorreta'}), 401
+        else:
+            return jsonify({'error': 'Email ou Senha incorretos'}), 404
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    finally:
+        cursor.close()
+        fechar_conexao(conn)
+
 
 @usuarios_bp.route('/delete/<int:id>', methods=['DELETE'])
 def delete_usuario(id):
@@ -71,7 +98,7 @@ def delete_usuario(id):
         user = cursor.fetchone()
 
         if not user:
-            return jsonify({'message': 'User not found'}), 404
+            return jsonify({'error': 'User not found'}), 404
 
         # Deletar o usuário
         cursor.execute("DELETE FROM User WHERE id = %s", (id,))
@@ -98,7 +125,7 @@ def update_usuario(id):
         existing_user = cursor.fetchone()
 
         if not existing_user:
-            return jsonify({'message': 'User not found'}), 404
+            return jsonify({'error': 'User not found'}), 404
 
         # Atualizar a senha, se for fornecida uma nova
         if updated_user.senha:

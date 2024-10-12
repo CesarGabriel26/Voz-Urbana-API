@@ -209,6 +209,22 @@
         "documentation": {}
     },
     {
+        "label": "TfidfVectorizer",
+        "importPath": "sklearn.feature_extraction.text",
+        "description": "sklearn.feature_extraction.text",
+        "isExtraImport": true,
+        "detail": "sklearn.feature_extraction.text",
+        "documentation": {}
+    },
+    {
+        "label": "KMeans",
+        "importPath": "sklearn.cluster",
+        "description": "sklearn.cluster",
+        "isExtraImport": true,
+        "detail": "sklearn.cluster",
+        "documentation": {}
+    },
+    {
         "label": "bcrypt",
         "kind": 6,
         "isExtraImport": true,
@@ -333,7 +349,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def get_petitions_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes WHERE user_id = %s\", (user_id,))\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found for this user'}), 404",
+        "peekOfCode": "def get_petitions_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes WHERE user_id = %s\", (user_id,))\n        petitions = cursor.fetchall()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'No petitions found for this user'}), 200",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -351,7 +367,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def delete_peticao(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se a petição existe\n        cursor.execute(\"SELECT * FROM peticoes WHERE id = %s\", (id,))\n        petition = cursor.fetchone()\n        if not petition:\n            return jsonify({'message': 'Petition not found'}), 404\n        # Deletar a petição",
+        "peekOfCode": "def delete_peticao(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se a petição existe\n        cursor.execute(\"SELECT * FROM peticoes WHERE id = %s\", (id,))\n        petition = cursor.fetchone()\n        if not petition:\n            return jsonify({'error': 'Petition not found'}), 404\n        # Deletar a petição",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -423,7 +439,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def get_reports_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports WHERE user_id = %s\", (user_id,))\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'No reports found for this user'}), 404",
+        "peekOfCode": "def get_reports_by_user(user_id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports WHERE user_id = %s\", (user_id,))\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'error': 'No reports found for this user'}), 404",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -441,7 +457,16 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def delete_report(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o report existe\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        report = cursor.fetchone()\n        if not report:\n            return jsonify({'message': 'Report not found'}), 404\n        # Deletar o report",
+        "peekOfCode": "def delete_report(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o report existe\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        report = cursor.fetchone()\n        if not report:\n            return jsonify({'error': 'Report not found'}), 404\n        # Deletar o report",
+        "detail": "routes.reports",
+        "documentation": {}
+    },
+    {
+        "label": "list_grouped_reports",
+        "kind": 2,
+        "importPath": "routes.reports",
+        "description": "routes.reports",
+        "peekOfCode": "def list_grouped_reports():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports\")\n        reports = cursor.fetchall()\n        if not reports:\n            return jsonify({'message': 'No reports found', 'content': []}), 200\n        # Extraindo títulos e conteúdos para o agrupamento\n        documents = [f\"{report['titulo']} {report['conteudo']}\" for report in reports]",
         "detail": "routes.reports",
         "documentation": {}
     },
@@ -473,11 +498,20 @@
         "documentation": {}
     },
     {
+        "label": "passwordCheck",
+        "kind": 2,
+        "importPath": "routes.usuario",
+        "description": "routes.usuario",
+        "peekOfCode": "def passwordCheck(id):\n    data = request.get_json()\n    senha = data.get('senha')\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário\n    try:\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        user_data  = cursor.fetchone()\n        if user_data :\n            if bcrypt.checkpw(senha.encode('utf-8'), user_data['senha'].encode('utf-8')):",
+        "detail": "routes.usuario",
+        "documentation": {}
+    },
+    {
         "label": "delete_usuario",
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def delete_usuario(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        user = cursor.fetchone()\n        if not user:\n            return jsonify({'message': 'User not found'}), 404\n        # Deletar o usuário",
+        "peekOfCode": "def delete_usuario(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        user = cursor.fetchone()\n        if not user:\n            return jsonify({'error': 'User not found'}), 404\n        # Deletar o usuário",
         "detail": "routes.usuario",
         "documentation": {}
     },
