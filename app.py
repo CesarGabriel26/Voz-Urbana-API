@@ -43,7 +43,7 @@ def swagger_json():
         return {}
 
 @app.route('/')
-def swagger_json():
+def main():
     return "Olá Mundo!!!!"
 
 
