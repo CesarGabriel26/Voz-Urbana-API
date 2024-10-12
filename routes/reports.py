@@ -45,7 +45,7 @@ def list_reports():
         if reports:
             return jsonify({'content': reports}), 200
         else:
-            return jsonify({'message': 'not found'}), 404
+            return jsonify({'message': 'empty', 'content': []}), 200
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:

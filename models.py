@@ -1,3 +1,6 @@
+import jwt
+import os
+
 class User:
     def __init__(self, nome, senha, email, cpf, pfp=None, user_id=None):
         self.id = user_id
@@ -27,6 +30,18 @@ class User:
             cpf=data['cpf'],
             user_id=data.get('id')
         )
+
+    def gerar_token(self):
+        payload = {
+            'id': self.id,
+            'nome': self.nome,
+            'email': self.email,
+            'senha': self.senha,
+            'pfp': self.pfp,
+            'cpf': self.cpf,
+        }
+        token = jwt.encode(payload, os.getenv("JWT_KEY"), algorithm='HS256')
+        return token
 
 class Report:
     def __init__(self, latitude, longitude, titulo, conteudo, imagem, data, user_id, report_id=None, aceito=False):

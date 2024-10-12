@@ -6,7 +6,6 @@ import bcrypt
 from models import User
 
 usuarios_bp = Blueprint('usuarios', __name__)
-SECRET_KEY = "ae26c5df0cbf451e2504f9ba5ab9d42f191939f65ce8e6a3f94787715db20811"
 
 @usuarios_bp.route('/create', methods=['POST'])
 def new_usuario():
@@ -16,7 +15,6 @@ def new_usuario():
     conn = criar_conexao()
     cursor = conn.cursor()
     hashed_password = bcrypt.hashpw(user.senha.encode('utf-8'), bcrypt.gensalt())
-    
     try:
         cursor.execute(
             "INSERT INTO usuarios (nome, email, senha, pfp, cpf) VALUES (%s, %s, %s, %s, %s)",
@@ -42,12 +40,17 @@ def login():
     
     try:
         cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
-        user = cursor.fetchone()
+        user_data  = cursor.fetchone()
 
-        if user:
-            if bcrypt.checkpw(senha.encode('utf-8'), user['senha'].encode('utf-8')):
-                return jsonify({'message': 'Usuario Encontrado', 'content': user}), 200
+        if user_data :
+            if bcrypt.checkpw(senha.encode('utf-8'), user_data ['senha'].encode('utf-8')):
+                user = User.from_dict(user_data )
+                token = user.gerar_token()
+                
+                return jsonify({'message': 'Usuario Encontrado', 'content': token}), 200
+            
             else:
+                
                 return jsonify({'message': 'Senha Incorreta'}), 401
         else:
             return jsonify({'message': 'Email ou Senha incorretos'}), 404
