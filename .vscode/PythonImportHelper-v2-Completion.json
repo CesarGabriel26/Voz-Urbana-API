@@ -504,7 +504,16 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def swagger_json():\n    if os.path.exists(\"swagger_spec.json\"):\n        with open(\"swagger_spec.json\", 'r') as json_file:\n            swagger_spec = json.load(json_file)\n            return swagger_spec\n    else:\n        return {}\nif __name__ == \"__main__\":\n    app.run()",
+        "peekOfCode": "def swagger_json():\n    if os.path.exists(\"swagger_spec.json\"):\n        with open(\"swagger_spec.json\", 'r') as json_file:\n            swagger_spec = json.load(json_file)\n            return swagger_spec\n    else:\n        return {}\n@app.route('/')\ndef swagger_json():\n    return \"Olá Mundo!!!!\"",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "swagger_json",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def swagger_json():\n    return \"Olá Mundo!!!!\"\nif __name__ == \"__main__\":\n    app.run()",
         "detail": "app",
         "documentation": {}
     },

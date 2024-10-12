@@ -42,6 +42,10 @@ def swagger_json():
     else:
         return {}
 
+@app.route('/')
+def swagger_json():
+    return "Olá Mundo!!!!"
+
 
 if __name__ == "__main__":
     app.run()
