@@ -170,45 +170,49 @@ def check_signatures(id):
 @petitions_bp.route('/check_all_open_petitions', methods=['GET'])
 def check_all_open_petitions():
     conn = criar_conexao()
-    cursor = conn.cursor()
     
     try:
-        # Busca todas as petições que estão abertas (campo aberto = TRUE)
-        cursor.execute("SELECT id, title, data_limite FROM peticoes WHERE aberto = TRUE")
-        result = cursor.fetchall()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM peticoes WHERE aberto = TRUE")
+            result = cursor.fetchall()
 
-        if not result:
-            return jsonify({'message': 'No open petitions found'}), 200
-        
-        open_petitions = []
-        data_atual = datetime.now()
+            if not result:
+                return jsonify({'message': 'No open petitions found'}), 200
+            
+            open_petitions = []
+            data_atual = datetime.now()
 
-        # Itera sobre as petições e calcula o tempo restante para cada uma
-        for row in result:
-            petition_id, title, data_limite = row
-            if data_limite:
-                time_remaining = data_limite - data_atual
-                if time_remaining.total_seconds() > 0:
-                    dias_restantes = time_remaining.days
-                    horas_restantes = time_remaining.seconds // 3600
-                    minutos_restantes = (time_remaining.seconds % 3600) // 60
+            for row in result:
+                petition_id, data_limite = row
+                
+                if data_limite:
+                    time_remaining = data_limite - data_atual
+                    
+                    if time_remaining.total_seconds() > 0:
+                        dias_restantes = time_remaining.days
+                        horas_restantes = time_remaining.seconds // 3600
+                        minutos_restantes = (time_remaining.seconds % 3600) // 60
 
-                    open_petitions.append({
-                        'id': petition_id,
-                        'title': title,
-                        'dias_restantes': dias_restantes,
-                        'horas_restantes': horas_restantes,
-                        'minutos_restantes': minutos_restantes
-                    })
-                else:
-                    # Caso a petição tenha expirado, pode-se fechá-la ou marcá-la como encerrada
-                    cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
-                    conn.commit()
+                        open_petitions.append(
+                            {
+                                'open_petitions': Petition.to_dict(row),
+                                "tempo_restante": {
+                                    'dias_restantes': dias_restantes,
+                                    'horas_restantes': horas_restantes,
+                                    'minutos_restantes': minutos_restantes
+                                }
+                            }
+                        )
+                    else:
+                        try:
+                            cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+                            conn.commit()
+                        except Exception as update_err:
+                            return jsonify({'error': f'Failed to update petition {petition_id}: {str(update_err)}'}), 500
 
-        return jsonify({'open_petitions': open_petitions}), 200
-        
+            return jsonify({'message': 'Open petitions', 'content': open_petitions}), 200
+            
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
-        cursor.close()
         fechar_conexao(conn)

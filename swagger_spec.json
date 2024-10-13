@@ -1415,8 +1415,8 @@
                 "tags": [
                     "abaixo-assinados"
                 ],
-                "summary": "Verificar o tempo restante para as petições abertas",
-                "description": "Retorna o tempo restante para cada petição aberta.",
+                "summary": "Verificar o tempo restante para as petições abertas e atualizar petições expiradas",
+                "description": "Retorna o tempo restante para cada petição aberta e atualiza o estado das petições que já expiraram.",
                 "responses": {
                     "200": {
                         "description": "Lista de petições com tempo restante",

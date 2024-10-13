@@ -393,7 +393,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def check_all_open_petitions():\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Busca todas as petições que estão abertas (campo aberto = TRUE)\n        cursor.execute(\"SELECT id, title, data_limite FROM peticoes WHERE aberto = TRUE\")\n        result = cursor.fetchall()\n        if not result:\n            return jsonify({'message': 'No open petitions found'}), 200\n        open_petitions = []",
+        "peekOfCode": "def check_all_open_petitions():\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            cursor.execute(\"SELECT * FROM peticoes WHERE aberto = TRUE\")\n            result = cursor.fetchall()\n            if not result:\n                return jsonify({'message': 'No open petitions found'}), 200\n            open_petitions = []\n            data_atual = datetime.now()",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
