@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from conexao import criar_conexao, fechar_conexao
 from models import Petition
 from psycopg2.extras import RealDictCursor
+from datetime import datetime, timedelta
 
 petitions_bp = Blueprint('peticoes', __name__)
 
@@ -12,15 +13,31 @@ def nova_peticao():
     
     conn = criar_conexao()
     cursor = conn.cursor()
+
+    # Definir status inicial e verificar data_limite
+    status_inicial = 0  # 0 = 'Criada'
+    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro
     
     try:
         cursor.execute(
-            "INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)",
-            (petition.user_id, petition.title, petition.content, petition.signatures, petition.required_signatures)
+            """
+            INSERT INTO peticoes (user_id, title, content, signatures, required_signatures, status, data_limite)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                petition.user_id,
+                petition.title,
+                petition.content,
+                petition.signatures,
+                petition.required_signatures,
+                status_inicial,
+                data_limite
+            )
         )
         conn.commit()
-        
+
         return jsonify({'message': 'Petition created successfully', 'content': petition.to_dict()}), 201
+
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
@@ -143,6 +160,53 @@ def check_signatures(id):
                 }), 200
         else:
             return jsonify({'error': 'Petition not found'}), 404
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    finally:
+        cursor.close()
+        fechar_conexao(conn)
+
+
+@petitions_bp.route('/check_all_open_petitions', methods=['GET'])
+def check_all_open_petitions():
+    conn = criar_conexao()
+    cursor = conn.cursor()
+    
+    try:
+        # Busca todas as petições que estão abertas (campo aberto = TRUE)
+        cursor.execute("SELECT id, title, data_limite FROM peticoes WHERE aberto = TRUE")
+        result = cursor.fetchall()
+
+        if not result:
+            return jsonify({'message': 'No open petitions found'}), 200
+        
+        open_petitions = []
+        data_atual = datetime.now()
+
+        # Itera sobre as petições e calcula o tempo restante para cada uma
+        for row in result:
+            petition_id, title, data_limite = row
+            if data_limite:
+                time_remaining = data_limite - data_atual
+                if time_remaining.total_seconds() > 0:
+                    dias_restantes = time_remaining.days
+                    horas_restantes = time_remaining.seconds // 3600
+                    minutos_restantes = (time_remaining.seconds % 3600) // 60
+
+                    open_petitions.append({
+                        'id': petition_id,
+                        'title': title,
+                        'dias_restantes': dias_restantes,
+                        'horas_restantes': horas_restantes,
+                        'minutos_restantes': minutos_restantes
+                    })
+                else:
+                    # Caso a petição tenha expirado, pode-se fechá-la ou marcá-la como encerrada
+                    cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+                    conn.commit()
+
+        return jsonify({'open_petitions': open_petitions}), 200
+        
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:

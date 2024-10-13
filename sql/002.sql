@@ -40,6 +40,7 @@ CREATE TABLE peticoes (
     required_signatures INT DEFAULT 100,
     aberto BOOLEAN NOT NULL DEFAULT FALSE,
     data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_limite TIMESTAMP NOT NULL, -- Data limite para coleta de assinaturas
     FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 

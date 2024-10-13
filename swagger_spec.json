@@ -22,7 +22,9 @@
     "paths": {
         "/usuarios/create": {
             "post": {
-                "tags": ["usuario"],
+                "tags": [
+                    "usuario"
+                ],
                 "summary": "Criar um novo usuário",
                 "description": "Cria um novo usuário com nome, email, senha, CPF e uma foto de perfil (opcional).",
                 "requestBody": {
@@ -104,7 +106,9 @@
         },
         "/usuarios/login": {
             "post": {
-                "tags": ["usuario"],
+                "tags": [
+                    "usuario"
+                ],
                 "summary": "Login do usuário",
                 "description": "Realiza o login de um usuário com email e senha.",
                 "requestBody": {
@@ -205,7 +209,9 @@
         },
         "/usuarios/passwordCheck/{id}": {
             "post": {
-                "tags": ["usuario"],
+                "tags": [
+                    "usuario"
+                ],
                 "summary": "Verificar a senha do usuário",
                 "description": "Verifica se a senha fornecida pelo usuário é igual à senha armazenada no banco de dados.",
                 "parameters": [
@@ -313,7 +319,9 @@
         },
         "/usuarios/update/{id}": {
             "put": {
-                "tags": ["usuario"],
+                "tags": [
+                    "usuario"
+                ],
                 "summary": "Atualizar um usuário",
                 "description": "Atualiza os dados de um usuário existente pelo ID.",
                 "parameters": [
@@ -422,7 +430,9 @@
         },
         "/usuarios/delete/{id}": {
             "delete": {
-                "tags": ["usuario"],
+                "tags": [
+                    "usuario"
+                ],
                 "summary": "Deletar um usuário",
                 "description": "Remove um usuário da base de dados pelo ID fornecido.",
                 "parameters": [
@@ -489,10 +499,11 @@
                 }
             }
         },
-        
         "/reports/create": {
             "post": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Criar um novo report",
                 "description": "Adiciona um novo report à base de dados.",
                 "requestBody": {
@@ -532,7 +543,11 @@
                                         "example": "2024-10-11T12:00:00Z"
                                     }
                                 },
-                                "required": ["user_id", "titulo", "conteudo"]
+                                "required": [
+                                    "user_id",
+                                    "titulo",
+                                    "conteudo"
+                                ]
                             }
                         }
                     }
@@ -594,7 +609,9 @@
         },
         "/reports/list": {
             "get": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Listar todos os reports",
                 "description": "Retorna uma lista de todos os reports na base de dados.",
                 "responses": {
@@ -637,7 +654,9 @@
         },
         "/reports/get_by_user/{user_id}": {
             "get": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Obter reports por usuário",
                 "description": "Retorna todos os reports de um usuário específico pelo ID.",
                 "parameters": [
@@ -708,7 +727,9 @@
         },
         "/reports/update/{id}": {
             "put": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Atualizar um report",
                 "description": "Atualiza um report existente pelo ID.",
                 "parameters": [
@@ -748,7 +769,10 @@
                                         "example": true
                                     }
                                 },
-                                "required": ["titulo", "conteudo"]
+                                "required": [
+                                    "titulo",
+                                    "conteudo"
+                                ]
                             }
                         }
                     }
@@ -810,7 +834,9 @@
         },
         "/reports/delete/{id}": {
             "delete": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Deletar um report",
                 "description": "Remove um report da base de dados pelo ID.",
                 "parameters": [
@@ -864,10 +890,11 @@
                 }
             }
         },
-
         "/imagem/upload": {
             "post": {
-                "tags": ["imagem"],
+                "tags": [
+                    "imagem"
+                ],
                 "summary": "Upload de uma imagem",
                 "description": "Faz o upload de uma imagem para o Blob.",
                 "requestBody": {
@@ -883,7 +910,9 @@
                                         "description": "Arquivo da imagem a ser enviada."
                                     }
                                 },
-                                "required": ["imagem"]
+                                "required": [
+                                    "imagem"
+                                ]
                             }
                         }
                     }
@@ -946,7 +975,9 @@
         },
         "/imagem/delete/{nome_arquivo}": {
             "delete": {
-                "tags": ["imagem"],
+                "tags": [
+                    "imagem"
+                ],
                 "summary": "Deletar uma imagem",
                 "description": "Remove uma imagem do Blob pelo nome do arquivo.",
                 "parameters": [
@@ -984,10 +1015,11 @@
                 }
             }
         },
-        
         "/petitions/create": {
             "post": {
-                "tags": ["abaixo-assinados"],
+                "tags": [
+                    "abaixo-assinados"
+                ],
                 "summary": "Criar uma nova petição",
                 "description": "Cria uma nova petição com os dados fornecidos.",
                 "requestBody": {
@@ -1016,9 +1048,19 @@
                                     "required_signatures": {
                                         "type": "integer",
                                         "description": "Número necessário de assinaturas para a petição ser considerada válida."
+                                    },
+                                    "data_limite": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Data limite para a petição."
                                     }
                                 },
-                                "required": ["user_id", "title", "content", "required_signatures"]
+                                "required": [
+                                    "user_id",
+                                    "title",
+                                    "content",
+                                    "required_signatures"
+                                ]
                             }
                         }
                     }
@@ -1065,7 +1107,9 @@
         },
         "/petitions/list": {
             "get": {
-                "tags": ["abaixo-assinados"],
+                "tags": [
+                    "abaixo-assinados"
+                ],
                 "summary": "Listar todas as petições",
                 "description": "Retorna uma lista de todas as petições disponíveis.",
                 "responses": {
@@ -1113,7 +1157,9 @@
         },
         "/petitions/get_by_user/{user_id}": {
             "get": {
-                "tags": ["abaixo-assinados"],
+                "tags": [
+                    "abaixo-assinados"
+                ],
                 "summary": "Obter petições por usuário",
                 "description": "Retorna as petições criadas por um usuário específico.",
                 "parameters": [
@@ -1184,7 +1230,9 @@
         },
         "/petitions/update/{id}": {
             "put": {
-                "tags": ["abaixo-assinados"],
+                "tags": [
+                    "abaixo-assinados"
+                ],
                 "summary": "Atualizar uma petição existente",
                 "description": "Atualiza os dados de uma petição com base no ID fornecido.",
                 "parameters": [
@@ -1226,7 +1274,12 @@
                                         "description": "Número necessário de assinaturas para a petição ser considerada válida."
                                     }
                                 },
-                                "required": ["user_id", "title", "content", "required_signatures"]
+                                "required": [
+                                    "user_id",
+                                    "title",
+                                    "content",
+                                    "required_signatures"
+                                ]
                             }
                         }
                     }
@@ -1289,7 +1342,9 @@
         },
         "/petitions/delete/{id}": {
             "delete": {
-                "tags": ["abaixo-assinados"],
+                "tags": [
+                    "abaixo-assinados"
+                ],
                 "summary": "Deletar uma petição existente",
                 "description": "Remove uma petição com base no ID fornecido.",
                 "parameters": [
@@ -1346,6 +1401,81 @@
                                         "error": {
                                             "type": "string",
                                             "example": "Erro ao processar a petição: detalhes do erro"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/petitions/check-timer": {
+            "get": {
+                "tags": [
+                    "abaixo-assinados"
+                ],
+                "summary": "Verificar o tempo restante para as petições abertas",
+                "description": "Retorna o tempo restante para cada petição aberta.",
+                "responses": {
+                    "200": {
+                        "description": "Lista de petições com tempo restante",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "user_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Salvar o Parque Nacional"
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "Precisamos proteger a biodiversidade do parque nacional."
+                                            },
+                                            "signatures": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "required_signatures": {
+                                                "type": "integer",
+                                                "example": 100
+                                            },
+                                            "data_limite": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-10-31T12:00:00Z"
+                                            },
+                                            "tempo_restante": {
+                                                "type": "string",
+                                                "example": "5 dias, 12 horas"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao verificar o tempo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao verificar o tempo das petições."
                                         }
                                     }
                                 }
@@ -1424,7 +1554,7 @@
                         "example": 1
                     }
                 }
-            },            
+            },
             "Petition": {
                 "type": "object",
                 "properties": {
@@ -1451,6 +1581,15 @@
                     "required_signatures": {
                         "type": "integer",
                         "example": 100
+                    },
+                    "data_limite": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-31T12:00:00Z"
+                    },
+                    "tempo_restante": {
+                        "type": "string",
+                        "example": "5 dias, 12 horas"
                     }
                 }
             }

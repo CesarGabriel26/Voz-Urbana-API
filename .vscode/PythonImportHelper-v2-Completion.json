@@ -208,6 +208,22 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "vercel_blob",
         "kind": 6,
         "isExtraImport": true,
@@ -323,7 +339,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)\",\n            (petition.user_id, petition.title, petition.content, petition.signatures, petition.required_signatures)\n        )",
+        "peekOfCode": "def nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    # Definir status inicial e verificar data_limite\n    status_inicial = 0  # 0 = 'Criada'\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro\n    try:\n        cursor.execute(",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -373,11 +389,20 @@
         "documentation": {}
     },
     {
+        "label": "check_all_open_petitions",
+        "kind": 2,
+        "importPath": "routes.abaixo_assinados",
+        "description": "routes.abaixo_assinados",
+        "peekOfCode": "def check_all_open_petitions():\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Busca todas as petições que estão abertas (campo aberto = TRUE)\n        cursor.execute(\"SELECT id, title, data_limite FROM peticoes WHERE aberto = TRUE\")\n        result = cursor.fetchall()\n        if not result:\n            return jsonify({'message': 'No open petitions found'}), 200\n        open_petitions = []",
+        "detail": "routes.abaixo_assinados",
+        "documentation": {}
+    },
+    {
         "label": "petitions_bp",
         "kind": 5,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        cursor.execute(\n            \"INSERT INTO peticoes (user_id, title, content, signatures, required_signatures) VALUES (%s, %s, %s, %s, %s)\",",
+        "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    # Definir status inicial e verificar data_limite\n    status_inicial = 0  # 0 = 'Criada'\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -611,7 +636,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Petition:\n    def __init__(self, user_id, title, content, signatures=0, petition_id=None):\n        self.id = petition_id\n        self.user_id = user_id\n        self.title = title\n        self.content = content\n        self.signatures = signatures\n    def to_dict(self):\n        return {\n            'id': self.id,",
+        "peekOfCode": "class Petition:\n    def __init__(self, user_id, title, content, signatures=0, required_signatures=100, status=0, data_limite=None, petition_id=None):\n        self.id = petition_id\n        self.user_id = user_id\n        self.title = title\n        self.content = content\n        self.signatures = signatures\n        self.required_signatures = required_signatures\n        self.status = status\n        self.data_limite = data_limite",
         "detail": "models",
         "documentation": {}
     }

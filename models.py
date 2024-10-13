@@ -83,12 +83,15 @@ class Report:
         )
 
 class Petition:
-    def __init__(self, user_id, title, content, signatures=0, petition_id=None):
+    def __init__(self, user_id, title, content, signatures=0, required_signatures=100, status=0, data_limite=None, petition_id=None):
         self.id = petition_id
         self.user_id = user_id
         self.title = title
         self.content = content
         self.signatures = signatures
+        self.required_signatures = required_signatures
+        self.status = status
+        self.data_limite = data_limite
 
     def to_dict(self):
         return {
@@ -96,7 +99,10 @@ class Petition:
             'user_id': self.user_id,
             'title': self.title,
             'content': self.content,
-            'signatures': self.signatures
+            'signatures': self.signatures,
+            'required_signatures': self.required_signatures,
+            'status': self.status,
+            'data_limite': self.data_limite
         }
 
     @classmethod
@@ -106,5 +112,8 @@ class Petition:
             title=data['title'],
             content=data['content'],
             signatures=data.get('signatures', 0),
-            id=data.get('id')
+            required_signatures=data.get('required_signatures', 100),
+            status=data.get('status', 0),
+            data_limite=data.get('data_limite'),
+            petition_id=data.get('id')
         )
