@@ -115,9 +115,9 @@ def delete_usuario(id):
 def update_usuario(id):
     data = request.get_json()
     updated_user = User.from_dict(data)
-    
+
     conn = criar_conexao()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário
 
     try:
         # Verificar se o usuário existe
@@ -131,18 +131,22 @@ def update_usuario(id):
         if updated_user.senha:
             hashed_password = bcrypt.hashpw(updated_user.senha.encode('utf-8'), bcrypt.gensalt())
         else:
-            hashed_password = existing_user['senha']
+            hashed_password = existing_user['senha']  # Mantém a senha existente
 
         # Atualizar os dados do usuário
-        cursor.execute("""
-            UPDATE User 
-            SET nome = %s, email = %s, senha = %s, foto = %s, cpf = %s 
-            WHERE id = %s
-        """, (updated_user.nome, updated_user.email, hashed_password, updated_user.pfp, updated_user.cpf, id))
+        cursor.execute(
+            """ UPDATE usuarios SET nome = %s, email = %s, senha = %s, pfp = %s, cpf = %s WHERE id = %s """, 
+            (updated_user.nome, updated_user.email, hashed_password, updated_user.pfp, updated_user.cpf, id, )
+        )
         
         conn.commit()
 
-        return jsonify({'message': 'User updated successfully', 'content': updated_user.to_dict()}), 200
+        # Gera um novo token
+        updated_user.senha = hashed_password  # Define a senha no objeto atualizado
+        token = updated_user.gerar_token()  # Gera um novo token com os dados atualizados
+        print(updated_user.pfp)
+
+        return jsonify({'message': 'User updated successfully', 'content': token}), 200
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:

@@ -25,7 +25,7 @@ class User:
         return cls(
             nome=data['nome'],
             email=data['email'],
-            senha=data['senha'],
+            senha=data.get('senha'),
             pfp=data.get('pfp'),
             cpf=data['cpf'],
             user_id=data.get('id')

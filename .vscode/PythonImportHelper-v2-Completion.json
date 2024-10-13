@@ -48,6 +48,14 @@
         "documentation": {}
     },
     {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -387,7 +395,7 @@
         "kind": 2,
         "importPath": "routes.imagem",
         "description": "routes.imagem",
-        "peekOfCode": "def delete_imagem(nome_arquivo):\n    try:\n        # Usa o método delete da biblioteca vercel_blob para remover a imagem\n        vercel_blob.delete(nome_arquivo)  # Remove o arquivo do Blob\n        return jsonify({\"message\": \"Imagem deletada com sucesso\"}), 204\n    except Exception as e:\n        return jsonify({\"error\": \"Erro ao deletar a imagem: \" + str(e)}), 500",
+        "peekOfCode": "def delete_imagem():\n    try:\n        data = request.get_json()  # Obtém os dados do corpo da requisição\n        nome_arquivo = data.get('link')  # Supondo que o link da imagem seja passado com a chave 'link'\n        print(nome_arquivo)\n        if not nome_arquivo:\n            return jsonify({\"error\": \"Link da imagem não fornecido\"}), 400\n        # Usa o método delete da biblioteca vercel_blob para remover a imagem\n        vercel_blob.delete(nome_arquivo)  # Remove o arquivo do Blob\n        return jsonify({\"message\": \"Imagem deletada com sucesso\", \"success\": True}), 200",
         "detail": "routes.imagem",
         "documentation": {}
     },
@@ -495,7 +503,7 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()\n        if not existing_user:",
+        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()\n        if not existing_user:",
         "detail": "routes.usuario",
         "documentation": {}
     },
