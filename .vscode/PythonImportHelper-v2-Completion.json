@@ -24,6 +24,14 @@
         "documentation": {}
     },
     {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -224,6 +232,14 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "vercel_blob",
         "kind": 6,
         "isExtraImport": true,
@@ -403,6 +419,15 @@
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
         "peekOfCode": "def check_all_open_petitions():\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            cursor.execute(\"SELECT * FROM peticoes WHERE aberto = TRUE\")\n            result = cursor.fetchall()\n            if not result:\n                return jsonify({'message': 'No open petitions found'}), 200\n            open_petitions = []\n            data_atual = datetime.now()",
+        "detail": "routes.abaixo_assinados",
+        "documentation": {}
+    },
+    {
+        "label": "check_timer",
+        "kind": 2,
+        "importPath": "routes.abaixo_assinados",
+        "description": "routes.abaixo_assinados",
+        "peekOfCode": "def check_timer(petition_id):\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            # Busca a petição pelo ID, apenas se estiver aberta\n            cursor.execute(\"SELECT data_limite FROM peticoes WHERE id = %s AND aberto = TRUE\", (petition_id,))\n            result = cursor.fetchone()\n            if not result:\n                return jsonify({'message': 'Petição não encontrada ou já está fechada.'}), 404\n            data_limite = result[0]",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },

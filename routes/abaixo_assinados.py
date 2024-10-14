@@ -236,3 +236,47 @@ def check_all_open_petitions():
         return jsonify({'error': str(err)}), 500
     finally:
         fechar_conexao(conn)
+
+from flask import jsonify
+from datetime import datetime
+
+@petitions_bp.route('/check_timer/<int:petition_id>', methods=['GET'])
+def check_timer(petition_id):
+    conn = criar_conexao()
+    
+    try:
+        with conn.cursor() as cursor:
+            # Busca a petição pelo ID, apenas se estiver aberta
+            cursor.execute("SELECT data_limite FROM peticoes WHERE id = %s AND aberto = TRUE", (petition_id,))
+            result = cursor.fetchone()
+
+            if not result:
+                return jsonify({'message': 'Petição não encontrada ou já está fechada.'}), 404
+            
+            data_limite = result[0]
+            data_atual = datetime.now()
+
+            if data_limite:
+                time_remaining = data_limite - data_atual
+
+                if time_remaining.total_seconds() > 0:
+                    dias_restantes = time_remaining.days
+                    horas_restantes = time_remaining.seconds // 3600
+                    minutos_restantes = (time_remaining.seconds % 3600) // 60
+
+                    return jsonify({
+                        'dias_restantes': dias_restantes,
+                        'horas_restantes': horas_restantes,
+                        'minutos_restantes': minutos_restantes
+                    }), 200
+                else:
+                    # Atualiza a petição para fechada se o tempo já passou
+                    cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+                    conn.commit()
+                    return jsonify({'message': 'O tempo para esta petição já expirou.'}), 200
+
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    finally:
+        fechar_conexao(conn)
+
