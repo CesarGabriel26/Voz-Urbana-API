@@ -63,6 +63,26 @@ def list_peticoes():
         cursor.close()
         fechar_conexao(conn)
 
+@petitions_bp.route('/get/<int:id>', methods=['GET'])
+def get_petitions_by_id(id):
+    conn = criar_conexao()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    try:
+        cursor.execute("SELECT * FROM peticoes WHERE id = %s", (id,))
+        petitions = cursor.fetchone()
+        
+        if petitions:
+            return jsonify({'content': petitions}), 200
+        else:
+            return jsonify({'message': 'petition not found'}), 404
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    finally:
+        cursor.close()
+        fechar_conexao(conn)
+
+
 @petitions_bp.route('/get_by_user/<int:user_id>', methods=['GET'])
 def get_petitions_by_user(user_id):
     conn = criar_conexao()

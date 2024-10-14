@@ -353,6 +353,15 @@
         "documentation": {}
     },
     {
+        "label": "get_petitions_by_id",
+        "kind": 2,
+        "importPath": "routes.abaixo_assinados",
+        "description": "routes.abaixo_assinados",
+        "peekOfCode": "def get_petitions_by_id(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM peticoes WHERE id = %s\", (id,))\n        petitions = cursor.fetchone()\n        if petitions:\n            return jsonify({'content': petitions}), 200\n        else:\n            return jsonify({'message': 'petition not found'}), 404",
+        "detail": "routes.abaixo_assinados",
+        "documentation": {}
+    },
+    {
         "label": "get_petitions_by_user",
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
