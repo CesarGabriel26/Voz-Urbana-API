@@ -86,6 +86,26 @@ def passwordCheck(id):
         cursor.close()
         fechar_conexao(conn)
 
+@usuarios_bp.route('/get/<int:id>', methods=['GET'])
+def get_usuario_by_id(id):
+    conn = criar_conexao()
+    cursor = conn.cursor()
+
+    try:
+        # Verificar se o usuário existe
+        cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify({'message': 'Found', "content": user}), 200
+    except Exception as err:
+        return jsonify({'error': str(err)}), 500
+    finally:
+        cursor.close()
+        fechar_conexao(conn)
+
 
 @usuarios_bp.route('/delete/<int:id>', methods=['DELETE'])
 def delete_usuario(id):
