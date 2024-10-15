@@ -562,7 +562,7 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def get_usuario_by_id(id):\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        user = cursor.fetchone()\n        if not user:\n            return jsonify({'error': 'User not found'}), 404\n        return jsonify({'message': 'Found', \"content\": user}), 200",
+        "peekOfCode": "def get_usuario_by_id(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        user = cursor.fetchone()\n        if not user:\n            return jsonify({'error': 'User not found'}), 404\n        return jsonify({'message': 'Found', \"content\": user}), 200",
         "detail": "routes.usuario",
         "documentation": {}
     },

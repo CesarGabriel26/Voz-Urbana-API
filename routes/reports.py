@@ -73,7 +73,6 @@ def get_petitions_by_id(id):
         cursor.close()
         fechar_conexao(conn)
 
-
 @reports_bp.route('/get_by_user/<int:user_id>', methods=['GET'])
 def get_reports_by_user(user_id):
     conn = criar_conexao()

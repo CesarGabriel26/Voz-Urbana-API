@@ -89,7 +89,7 @@ def passwordCheck(id):
 @usuarios_bp.route('/get/<int:id>', methods=['GET'])
 def get_usuario_by_id(id):
     conn = criar_conexao()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     try:
         # Verificar se o usuário existe
