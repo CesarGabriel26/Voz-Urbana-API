@@ -427,7 +427,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def check_timer(petition_id):\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            # Busca a petição pelo ID, apenas se estiver aberta\n            cursor.execute(\"SELECT data_limite FROM peticoes WHERE id = %s AND aberto = TRUE\", (petition_id,))\n            result = cursor.fetchone()\n            if not result:\n                return jsonify({'message': 'Petição não encontrada ou já está fechada.'}), 404\n            data_limite = result[0]",
+        "peekOfCode": "def check_timer(petition_id):\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            # Busca a petição pelo ID, apenas se estiver aberta\n            cursor.execute(\"SELECT data_limite FROM peticoes WHERE id = %s AND aberto = TRUE\", (petition_id,))\n            result = cursor.fetchone()\n            if not result:\n                return jsonify({'error': 'Petição não encontrada ou já está fechada.'}), 404\n            data_limite = result[0]",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -482,6 +482,15 @@
         "importPath": "routes.reports",
         "description": "routes.reports",
         "peekOfCode": "def list_reports():\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports\")\n        reports = cursor.fetchall()\n        if reports:\n            return jsonify({'content': reports}), 200\n        else:\n            return jsonify({'message': 'empty', 'content': []}), 200",
+        "detail": "routes.reports",
+        "documentation": {}
+    },
+    {
+        "label": "get_petitions_by_id",
+        "kind": 2,
+        "importPath": "routes.reports",
+        "description": "routes.reports",
+        "peekOfCode": "def get_petitions_by_id(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        petitions = cursor.fetchone()\n        if petitions:\n            return jsonify({'message': \"found\", 'content': petitions}), 200\n        else:\n            return jsonify({'message': 'report not found'}), 404",
         "detail": "routes.reports",
         "documentation": {}
     },

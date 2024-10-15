@@ -251,7 +251,7 @@ def check_timer(petition_id):
             result = cursor.fetchone()
 
             if not result:
-                return jsonify({'message': 'Petição não encontrada ou já está fechada.'}), 404
+                return jsonify({'error': 'Petição não encontrada ou já está fechada.'}), 404
             
             data_limite = result[0]
             data_atual = datetime.now()
