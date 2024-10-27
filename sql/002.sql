@@ -27,6 +27,7 @@ CREATE TABLE reports (
     imagem TEXT NOT NULL,
     aceito BOOLEAN NOT NULL DEFAULT FALSE,
     data TIMESTAMP NOT NULL,
+    adress TEXT DEFAULT "",
     FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 

@@ -23,8 +23,8 @@ def novo_report():
     
     try:
         cursor.execute(
-            "INSERT INTO reports (user_id, latitude, longitude, titulo, conteudo, imagem, data) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (report.user_id, report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data)
+            "INSERT INTO reports (user_id, latitude, longitude, titulo, conteudo, imagem, data, adress) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (report.user_id, report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data, report.adress)
         )
         conn.commit()
         

@@ -1552,6 +1552,10 @@
                     "user_id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "adress": {
+                        "type": "string",
+                        "example": "Endereço do local da reclamação"
                     }
                 }
             },

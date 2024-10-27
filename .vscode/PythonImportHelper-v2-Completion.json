@@ -679,7 +679,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, imagem, data, user_id, report_id=None, aceito=False):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.imagem = imagem\n        self.aceito = aceito\n        self.data = data",
+        "peekOfCode": "class Report:\n    def __init__(self, latitude, longitude, titulo, conteudo, imagem, data, user_id, adress, report_id=None, aceito=False):\n        self.id = report_id\n        self.latitude = latitude\n        self.longitude = longitude\n        self.titulo = titulo\n        self.conteudo = conteudo\n        self.imagem = imagem\n        self.aceito = aceito\n        self.data = data",
         "detail": "models",
         "documentation": {}
     },
