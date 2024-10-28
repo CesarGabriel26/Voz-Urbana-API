@@ -2,13 +2,14 @@ import jwt
 import os
 
 class User:
-    def __init__(self, nome, senha, email, cpf, pfp=None, user_id=None):
+    def __init__(self, nome, senha, email, cpf, last_update, pfp=None, user_id=None):
         self.id = user_id
         self.nome = nome
         self.senha = senha
         self.email = email
         self.cpf = cpf
         self.pfp = pfp
+        self.last_update = last_update
 
     def to_dict(self):
         return {
@@ -18,6 +19,7 @@ class User:
             'senha': self.senha,
             'pfp': self.pfp,
             'cpf': self.cpf,
+            'last_update' : self.last_update
         }
 
     @classmethod
@@ -28,7 +30,8 @@ class User:
             senha=data.get('senha'),
             pfp=data.get('pfp'),
             cpf=data['cpf'],
-            user_id=data.get('id')
+            user_id=data.get('id'),
+            last_update=data['last_update']
         )
 
     def gerar_token(self):
@@ -36,9 +39,9 @@ class User:
             'id': self.id,
             'nome': self.nome,
             'email': self.email,
-            'senha': self.senha,
             'pfp': self.pfp,
             'cpf': self.cpf,
+            'last_update': self.last_update.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         }
         token = jwt.encode(payload, os.getenv("JWT_KEY"), algorithm='HS256')
         return token

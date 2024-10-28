@@ -580,7 +580,16 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)  # Usando RealDictCursor para retornar resultados como dicionário\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()\n        if not existing_user:",
+        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        # Verificar se o usuário existe\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()\n        if not existing_user:",
+        "detail": "routes.usuario",
+        "documentation": {}
+    },
+    {
+        "label": "verify_token",
+        "kind": 2,
+        "importPath": "routes.usuario",
+        "description": "routes.usuario",
+        "peekOfCode": "def verify_token(id):\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT last_update FROM usuarios WHERE id = %s\", (id,))\n        user = cursor.fetchone()\n        if not user:\n            return jsonify({'error': 'User not found'}), 404\n        return jsonify({'message': 'ok', 'content' : {'last_update': user['last_update']}}), 200\n    except Exception as err:",
         "detail": "routes.usuario",
         "documentation": {}
     },
@@ -670,7 +679,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class User:\n    def __init__(self, nome, senha, email, cpf, pfp=None, user_id=None):\n        self.id = user_id\n        self.nome = nome\n        self.senha = senha\n        self.email = email\n        self.cpf = cpf\n        self.pfp = pfp\n    def to_dict(self):\n        return {",
+        "peekOfCode": "class User:\n    def __init__(self, nome, senha, email, cpf, last_update, pfp=None, user_id=None):\n        self.id = user_id\n        self.nome = nome\n        self.senha = senha\n        self.email = email\n        self.cpf = cpf\n        self.pfp = pfp\n        self.last_update = last_update\n    def to_dict(self):",
         "detail": "models",
         "documentation": {}
     },

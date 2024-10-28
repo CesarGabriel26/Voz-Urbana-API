@@ -1,5 +1,5 @@
 -- Criação do banco de dados
-CREATE DATABASE IF NOT EXISTS "VozUrbana";
+CREATE DATABASE "VozUrbana";
 
 -- Uso do banco de dados
 \c VozUrbana;
@@ -15,7 +15,7 @@ CREATE TABLE usuarios (
     pfp TEXT
 );
 
--- Tabela para os reports
+-- Tabela para os reports (reclamações)
 DROP TABLE IF EXISTS reports;
 CREATE TABLE reports (
     id SERIAL PRIMARY KEY,
@@ -27,11 +27,12 @@ CREATE TABLE reports (
     imagem TEXT NOT NULL,
     aceito BOOLEAN NOT NULL DEFAULT FALSE,
     data TIMESTAMP NOT NULL,
-    adress TEXT DEFAULT "",
+    adress TEXT DEFAULT '',
+    status int DEFAULT 0,  -- Coluna status adicionada com valor padrão
     FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Tabela para as petitions
+-- Tabela para as petições
 DROP TABLE IF EXISTS peticoes;
 CREATE TABLE peticoes (
     id SERIAL PRIMARY KEY,
@@ -41,7 +42,9 @@ CREATE TABLE peticoes (
     required_signatures INT DEFAULT 100,
     aberto BOOLEAN NOT NULL DEFAULT FALSE,
     data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_limite TIMESTAMP NOT NULL, -- Data limite para coleta de assinaturas
+    data_limite TIMESTAMP NOT NULL,         -- Data limite para coleta de assinaturas
+    status int DEFAULT 0,      -- Nova coluna status com valor padrão
+    causa TEXT,                              -- Nova coluna causa para descrever a causa da petição
     FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
