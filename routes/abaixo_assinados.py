@@ -225,7 +225,7 @@ def check_all_open_petitions():
                         )
                     else:
                         try:
-                            cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+                            cursor.execute("UPDATE peticoes SET status = -1 WHERE id = %s", (petition_id,))
                             conn.commit()
                         except Exception as update_err:
                             return jsonify({'error': f'Failed to update petition {petition_id}: {str(update_err)}'}), 500
@@ -236,9 +236,6 @@ def check_all_open_petitions():
         return jsonify({'error': str(err)}), 500
     finally:
         fechar_conexao(conn)
-
-from flask import jsonify
-from datetime import datetime
 
 @petitions_bp.route('/check_timer/<int:petition_id>', methods=['GET'])
 def check_timer(petition_id):
