@@ -34,6 +34,7 @@ class User:
             cpf=data['cpf'],
             user_id=data.get('id'),
             type = data.get('type', 0),
+            last_update=data.get('last_update')
         )
 
     def gerar_token(self):
