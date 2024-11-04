@@ -33,7 +33,7 @@ class User:
             pfp=data.get('pfp'),
             cpf=data['cpf'],
             user_id=data.get('id'),
-            type = data['type'],
+            type = data.get('type', 0),
             last_update=data['last_update']
         )
 
