@@ -21,7 +21,7 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO peticoes (user_id, title, content, signatures, required_signatures, status, data_limite)
+            INSERT INTO peticoes (user_id, causa, content, signatures, required_signatures, status, data_limite)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,
             (
