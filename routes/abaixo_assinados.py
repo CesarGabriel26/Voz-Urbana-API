@@ -121,9 +121,9 @@ def update_peticao(id):
         # Atualizar a petição
         cursor.execute("""
             UPDATE peticoes 
-            SET user_id = %s, title = %s, content = %s, signatures = %s, required_signatures = %s
+            SET user_id = %s, title = %s, content = %s, signatures = %s, required_signatures = %s, status = %s
             WHERE id = %s
-        """, (updated_petition.user_id, updated_petition.title, updated_petition.content, updated_petition.signatures, updated_petition.required_signatures, id))
+        """, (updated_petition.user_id, updated_petition.title, updated_petition.content, updated_petition.signatures, updated_petition.required_signatures, updated_petition.status, id))
         
         conn.commit()
 
