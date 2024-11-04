@@ -679,7 +679,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class User:\n    def __init__(self, nome, senha, email, cpf, last_update, pfp=None, user_id=None):\n        self.id = user_id\n        self.nome = nome\n        self.senha = senha\n        self.email = email\n        self.cpf = cpf\n        self.pfp = pfp\n        self.last_update = last_update\n    def to_dict(self):",
+        "peekOfCode": "class User:\n    def __init__(self, nome, senha, email, cpf, last_update, type,  pfp=None, user_id=None):\n        self.id = user_id\n        self.nome = nome\n        self.senha = senha\n        self.email = email\n        self.cpf = cpf\n        self.pfp = pfp\n        self.type = type\n        self.last_update = last_update",
         "detail": "models",
         "documentation": {}
     },

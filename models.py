@@ -2,13 +2,14 @@ import jwt
 import os
 
 class User:
-    def __init__(self, nome, senha, email, cpf, last_update, pfp=None, user_id=None):
+    def __init__(self, nome, senha, email, cpf, last_update, type,  pfp=None, user_id=None):
         self.id = user_id
         self.nome = nome
         self.senha = senha
         self.email = email
         self.cpf = cpf
         self.pfp = pfp
+        self.type = type
         self.last_update = last_update
 
     def to_dict(self):
@@ -19,6 +20,7 @@ class User:
             'senha': self.senha,
             'pfp': self.pfp,
             'cpf': self.cpf,
+            'type' : self.type,
             'last_update' : self.last_update
         }
 
@@ -31,6 +33,7 @@ class User:
             pfp=data.get('pfp'),
             cpf=data['cpf'],
             user_id=data.get('id'),
+            type = data['type'],
             last_update=data['last_update']
         )
 
@@ -41,6 +44,7 @@ class User:
             'email': self.email,
             'pfp': self.pfp,
             'cpf': self.cpf,
+            'type': self.type,
             'last_update': self.last_update.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         }
         token = jwt.encode(payload, os.getenv("JWT_KEY"), algorithm='HS256')
