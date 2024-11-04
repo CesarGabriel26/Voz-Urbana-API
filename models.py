@@ -126,7 +126,7 @@ class Petition:
             signatures=data.get('signatures', 0),
             required_signatures=data.get('required_signatures', 100),
             status=data.get('status', 0),
-            aberto=data.get('aberto'),
+            aberto=data['aberto'],
             data_limite=data.get('data_limite'),
             petition_id=data.get('id')
         )
