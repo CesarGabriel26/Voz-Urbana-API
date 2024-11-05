@@ -165,7 +165,6 @@ class Petition:
             data_limite=data.get('data_limite'),
             data_conclusao=data.get('data_conclusao'),
             status=data.get('status', 0),
-            causa=data.get('causa'),
             motivo_encerramento=data.get('motivo_encerramento'),
             local=data.get('local'),
             categoria=data.get('categoria'),
