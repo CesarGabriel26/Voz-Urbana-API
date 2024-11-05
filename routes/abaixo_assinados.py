@@ -21,7 +21,7 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO petitions (user_id, titulo, content, signatures, required_signatures, status, aberto, data_limite, causa, local, categoria)
+            INSERT INTO petitions (user_id, titulo, content, signatures, required_signatures, status, aberto, data_limite, local, categoria)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
             """,
@@ -34,7 +34,6 @@ def nova_peticao():
                 status_inicial,
                 petition.aberto,
                 data_limite,
-                petition.causa,
                 petition.local,
                 petition.categoria
             )
