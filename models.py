@@ -96,7 +96,7 @@ class Report:
             conteudo=data['conteudo'],
             imagem=data['imagem'],
             aceito=data.get('aceito', False),
-            data=data['data'],
+            data=data.get('data'),
             report_id=data.get('id'),
             adress=data.get('adress', ""),
             user_id=data['user_id'],
