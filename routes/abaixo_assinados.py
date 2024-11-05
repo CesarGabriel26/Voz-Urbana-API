@@ -117,7 +117,7 @@ def update_peticao(id):
         cursor.execute(""" 
             UPDATE petitions 
             SET user_id = %s, titulo = %s, content = %s, signatures = %s, required_signatures = %s, 
-                aberto = %s, data_limite = %s, causa = %s, local = %s, categoria = %s 
+                aberto = %s, data_limite = %s, local = %s, categoria = %s 
             WHERE id = %s
         """, (
             updated_petition.user_id,
@@ -127,7 +127,6 @@ def update_peticao(id):
             updated_petition.required_signatures,
             updated_petition.aberto,
             updated_petition.data_limite,
-            updated_petition.causa,
             updated_petition.local,
             updated_petition.categoria,
             id
@@ -251,7 +250,7 @@ def check_timer(petition_id):
     try:
         with conn.cursor() as cursor:
             # Busca a petição pelo ID, apenas se estiver aberta
-            cursor.execute("SELECT data_limite FROM petitions WHERE id = %s AND aberto = TRUE", (petition_id,))
+            cursor.execute("SELECT data_limite FROM petitions WHERE id = %s ", (petition_id,))
             result = cursor.fetchone()
 
             if not result:
