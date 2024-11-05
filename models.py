@@ -115,7 +115,7 @@ class Petition:
 ):
         self.id = petition_id
         self.user_id = user_id
-        self.title = title
+        self.causa = causa
         self.content = content
         self.signatures = signatures
         self.required_signatures = required_signatures
@@ -135,7 +135,7 @@ class Petition:
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'title': self.title,
+            'causa': self.causa,
             'content': self.content,
             'signatures': self.signatures,
             'required_signatures': self.required_signatures,
@@ -156,7 +156,7 @@ class Petition:
     def from_dict(cls, data):
         return cls(
             user_id=data['user_id'],
-            title=data['title'],
+            causa=data['causa'],
             content=data['content'],
             signatures=data.get('signatures', 0),
             required_signatures=data.get('required_signatures', 100),
