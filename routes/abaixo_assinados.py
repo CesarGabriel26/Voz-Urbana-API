@@ -21,7 +21,7 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO petitions (user_id, title, content, signatures, required_signatures, status, aberto, data_limite, causa, local, categoria)
+            INSERT INTO petitions (user_id, titulo, content, signatures, required_signatures, status, aberto, data_limite, causa, local, categoria)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
             """,
@@ -128,7 +128,7 @@ def update_peticao(id):
         # Atualizar a petição
         cursor.execute(""" 
             UPDATE petitions 
-            SET user_id = %s, title = %s, content = %s, signatures = %s, required_signatures = %s, 
+            SET user_id = %s, titulo = %s, content = %s, signatures = %s, required_signatures = %s, 
                 aberto = %s, data_limite = %s, causa = %s, local = %s, categoria = %s 
             WHERE id = %s
         """, (
