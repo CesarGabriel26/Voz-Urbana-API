@@ -109,13 +109,13 @@ class Petition:
     def __init__(
     self, user_id, title, content, signatures=0, required_signatures=100, 
     aberto=False, data=None, data_limite=None, data_conclusao=None, 
-    status=0, causa=None, motivo_encerramento=None, local=None, 
+    status=0, motivo_encerramento=None, local=None, 
     categoria=None, total_apoios=0, data_ultima_atualizacao=None, 
     petition_id=None
 ):
         self.id = petition_id
         self.user_id = user_id
-        self.causa = causa
+        self.title = title
         self.content = content
         self.signatures = signatures
         self.required_signatures = required_signatures
@@ -124,7 +124,6 @@ class Petition:
         self.data_limite = data_limite
         self.data_conclusao = data_conclusao
         self.status = status
-        self.causa = causa
         self.motivo_encerramento = motivo_encerramento
         self.local = local
         self.categoria = categoria
@@ -135,7 +134,6 @@ class Petition:
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'causa': self.causa,
             'content': self.content,
             'signatures': self.signatures,
             'required_signatures': self.required_signatures,
@@ -144,7 +142,6 @@ class Petition:
             'data_limite': self.data_limite,
             'data_conclusao': self.data_conclusao,
             'status': self.status,
-            'causa': self.causa,
             'motivo_encerramento': self.motivo_encerramento,
             'local': self.local,
             'categoria': self.categoria,
