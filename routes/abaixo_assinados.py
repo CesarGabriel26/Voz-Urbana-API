@@ -19,26 +19,20 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local, categoria)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            RETURNING id
+            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
                 petition.user_id,
-                petition.title,
+                petition.titulo,
                 petition.content,
                 petition.required_signatures,
                 data_limite,
-                petition.local,
-                petition.categoria
+                petition.local
             )
         )
-        petition_id = cursor.fetchone()[0]
         conn.commit()
-
-        petition.id = petition_id  # Atualiza o ID da petição criada
-
-        return jsonify({'message': 'Petition created successfully', 'content': petition.to_dict()}), 201
+        return jsonify({'message': 'Petition created successfully'}), 201
 
     except Exception as err:
         return jsonify({'error': str(err)}), 500
