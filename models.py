@@ -156,7 +156,7 @@ class Petition:
     def from_dict(cls, data):
         return cls(
             user_id=data['user_id'],
-            causa=data['causa'],
+            title=data['title'],
             content=data['content'],
             signatures=data.get('signatures', 0),
             required_signatures=data.get('required_signatures', 100),
