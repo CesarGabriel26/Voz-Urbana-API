@@ -14,25 +14,20 @@ def nova_peticao():
     conn = criar_conexao()
     cursor = conn.cursor()
 
-    # Definir status inicial e verificar data_limite
-    status_inicial = 0  # 0 = 'Criada'
     data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro
     
     try:
         cursor.execute(
             """
-            INSERT INTO petitions (user_id, titulo, content, signatures, required_signatures, status, aberto, data_limite, local, categoria)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local, categoria)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
             """,
             (
                 petition.user_id,
                 petition.title,
                 petition.content,
-                petition.signatures,
                 petition.required_signatures,
-                status_inicial,
-                petition.aberto,
                 data_limite,
                 petition.local,
                 petition.categoria

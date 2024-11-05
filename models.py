@@ -156,7 +156,7 @@ class Petition:
             title=data['title'],
             content=data['content'],
             signatures=data.get('signatures', 0),
-            required_signatures=data.get('required_signatures', 100),
+            required_signatures=data.get('required_signatures', 1000),
             aberto=data.get('aberto', False),
             data=data.get('data'),
             data_limite=data.get('data_limite'),
