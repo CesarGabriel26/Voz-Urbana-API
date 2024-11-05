@@ -21,8 +21,9 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO peticoes (user_id, title, content, signatures, required_signatures, status, data_limite)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO petitions (user_id, title, content, signatures, required_signatures, status, aberto, data_limite, causa, local, categoria)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id
             """,
             (
                 petition.user_id,
@@ -31,10 +32,17 @@ def nova_peticao():
                 petition.signatures,
                 petition.required_signatures,
                 status_inicial,
-                data_limite
+                petition.aberto,
+                data_limite,
+                petition.causa,
+                petition.local,
+                petition.categoria
             )
         )
+        petition_id = cursor.fetchone()[0]
         conn.commit()
+
+        petition.id = petition_id  # Atualiza o ID da petição criada
 
         return jsonify({'message': 'Petition created successfully', 'content': petition.to_dict()}), 201
 
@@ -50,7 +58,7 @@ def list_peticoes():
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        cursor.execute("select * from peticoes")
+        cursor.execute("SELECT * FROM petitions")
         petitions = cursor.fetchall()
         
         if petitions:
@@ -69,19 +77,18 @@ def get_petitions_by_id(id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        cursor.execute("SELECT * FROM peticoes WHERE id = %s", (id,))
-        petitions = cursor.fetchone()
+        cursor.execute("SELECT * FROM petitions WHERE id = %s", (id,))
+        petition = cursor.fetchone()
         
-        if petitions:
-            return jsonify({'content': petitions}), 200
+        if petition:
+            return jsonify({'content': petition}), 200
         else:
-            return jsonify({'message': 'petition not found'}), 404
+            return jsonify({'message': 'Petition not found'}), 404
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
         cursor.close()
         fechar_conexao(conn)
-
 
 @petitions_bp.route('/get_by_user/<int:user_id>', methods=['GET'])
 def get_petitions_by_user(user_id):
@@ -89,7 +96,7 @@ def get_petitions_by_user(user_id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        cursor.execute("SELECT * FROM peticoes WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT * FROM petitions WHERE user_id = %s", (user_id,))
         petitions = cursor.fetchall()
         
         if petitions:
@@ -112,18 +119,31 @@ def update_peticao(id):
 
     try:
         # Verificar se a petição existe
-        cursor.execute("SELECT * FROM peticoes WHERE id = %s", (id,))
+        cursor.execute("SELECT * FROM petitions WHERE id = %s", (id,))
         existing_petition = cursor.fetchone()
 
         if not existing_petition:
             return jsonify({'error': 'Petition not found'}), 404
 
         # Atualizar a petição
-        cursor.execute("""
-            UPDATE peticoes 
-            SET user_id = %s, title = %s, content = %s, signatures = %s, required_signatures = %s
+        cursor.execute(""" 
+            UPDATE petitions 
+            SET user_id = %s, title = %s, content = %s, signatures = %s, required_signatures = %s, 
+                aberto = %s, data_limite = %s, causa = %s, local = %s, categoria = %s 
             WHERE id = %s
-        """, (updated_petition.user_id, updated_petition.title, updated_petition.content, updated_petition.signatures, updated_petition.required_signatures, id))
+        """, (
+            updated_petition.user_id,
+            updated_petition.title,
+            updated_petition.content,
+            updated_petition.signatures,
+            updated_petition.required_signatures,
+            updated_petition.aberto,
+            updated_petition.data_limite,
+            updated_petition.causa,
+            updated_petition.local,
+            updated_petition.categoria,
+            id
+        ))
         
         conn.commit()
 
@@ -141,14 +161,14 @@ def delete_peticao(id):
 
     try:
         # Verificar se a petição existe
-        cursor.execute("SELECT * FROM peticoes WHERE id = %s", (id,))
+        cursor.execute("SELECT * FROM petitions WHERE id = %s", (id,))
         petition = cursor.fetchone()
 
         if not petition:
             return jsonify({'error': 'Petition not found'}), 404
 
         # Deletar a petição
-        cursor.execute("DELETE FROM peticoes WHERE id = %s", (id,))
+        cursor.execute("DELETE FROM petitions WHERE id = %s", (id,))
         conn.commit()
 
         return jsonify({'message': 'Petition deleted successfully'}), 200
@@ -164,7 +184,7 @@ def check_signatures(id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
     try:
-        cursor.execute("SELECT signatures, required_signatures FROM peticoes WHERE id = %s", (id,))
+        cursor.execute("SELECT signatures, required_signatures FROM petitions WHERE id = %s", (id,))
         petition = cursor.fetchone()
         
         if petition:
@@ -173,7 +193,7 @@ def check_signatures(id):
             else:
                 return jsonify({
                     'message': 'Petition has not yet reached the required number of signatures',
-                    'content' : {
+                    'content': {
                         'current_signatures': petition['signatures'],
                         'required_signatures': petition['required_signatures']
                     }
@@ -186,14 +206,13 @@ def check_signatures(id):
         cursor.close()
         fechar_conexao(conn)
 
-
 @petitions_bp.route('/check_all_open_petitions', methods=['GET'])
 def check_all_open_petitions():
     conn = criar_conexao()
     
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM peticoes WHERE aberto = TRUE")
+            cursor.execute("SELECT * FROM petitions WHERE aberto = TRUE")
             result = cursor.fetchall()
 
             if not result:
@@ -203,7 +222,7 @@ def check_all_open_petitions():
             data_atual = datetime.now()
 
             for row in result:
-                petition_id, data_limite = row
+                petition_id, data_limite = row[0], row[7]  # Certifique-se de que o índice corresponde ao data_limite
                 
                 if data_limite:
                     time_remaining = data_limite - data_atual
@@ -225,7 +244,7 @@ def check_all_open_petitions():
                         )
                     else:
                         try:
-                            cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+                            cursor.execute("UPDATE petitions SET aberto = FALSE WHERE id = %s", (petition_id,))
                             conn.commit()
                         except Exception as update_err:
                             return jsonify({'error': f'Failed to update petition {petition_id}: {str(update_err)}'}), 500
@@ -237,9 +256,6 @@ def check_all_open_petitions():
     finally:
         fechar_conexao(conn)
 
-from flask import jsonify
-from datetime import datetime
-
 @petitions_bp.route('/check_timer/<int:petition_id>', methods=['GET'])
 def check_timer(petition_id):
     conn = criar_conexao()
@@ -247,36 +263,40 @@ def check_timer(petition_id):
     try:
         with conn.cursor() as cursor:
             # Busca a petição pelo ID, apenas se estiver aberta
-            cursor.execute("SELECT data_limite FROM peticoes WHERE id = %s AND aberto = TRUE", (petition_id,))
+            cursor.execute("SELECT data_limite FROM petitions WHERE id = %s AND aberto = TRUE", (petition_id,))
             result = cursor.fetchone()
 
             if not result:
-                return jsonify({'error': 'Petição não encontrada ou já está fechada.'}), 404
+                return jsonify({'error': 'Petition not found or not open'}), 404
             
             data_limite = result[0]
             data_atual = datetime.now()
 
-            if data_limite:
-                time_remaining = data_limite - data_atual
-
-                if time_remaining.total_seconds() > 0:
-                    dias_restantes = time_remaining.days
-                    horas_restantes = time_remaining.seconds // 3600
-                    minutos_restantes = (time_remaining.seconds % 3600) // 60
-
-                    return jsonify({
-                        'dias_restantes': dias_restantes,
-                        'horas_restantes': horas_restantes,
-                        'minutos_restantes': minutos_restantes
-                    }), 200
-                else:
-                    # Atualiza a petição para fechada se o tempo já passou
-                    cursor.execute("UPDATE peticoes SET aberto = FALSE WHERE id = %s", (petition_id,))
+            if data_limite and data_limite <= data_atual:
+                try:
+                    # Fecha a petição se o tempo se esgotou
+                    cursor.execute("UPDATE petitions SET aberto = FALSE WHERE id = %s", (petition_id,))
                     conn.commit()
-                    return jsonify({'message': 'O tempo para esta petição já expirou.'}), 200
+                    return jsonify({'message': 'Petition has been closed due to time expiration'}), 200
+                except Exception as update_err:
+                    return jsonify({'error': str(update_err)}), 500
+            
+            time_remaining = data_limite - data_atual
+            
+            dias_restantes = time_remaining.days
+            horas_restantes = time_remaining.seconds // 3600
+            minutos_restantes = (time_remaining.seconds % 3600) // 60
 
+            return jsonify({
+                'message': 'Time remaining for the petition',
+                'tempo_restante': {
+                    'dias_restantes': dias_restantes,
+                    'horas_restantes': horas_restantes,
+                    'minutos_restantes': minutos_restantes
+                }
+            }), 200
+            
     except Exception as err:
         return jsonify({'error': str(err)}), 500
     finally:
         fechar_conexao(conn)
-

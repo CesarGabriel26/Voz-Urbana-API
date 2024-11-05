@@ -111,8 +111,8 @@ def update_report(id):
         # Atualizar o report
         cursor.execute(
             """
-                UPDATE Report 
-                SET titulo = %s, conteudo = %s, data = %s, aceito= %s
+                UPDATE reports
+                SET titulo = %s, conteudo = %s, data = %s, aceito = %s
                 WHERE id = %s
             """, 
             (updated_report.titulo, updated_report.conteudo, updated_report.data, updated_report.aceito, id)
@@ -141,7 +141,7 @@ def delete_report(id):
             return jsonify({'error': 'Report not found'}), 404
 
         # Deletar o report
-        cursor.execute("DELETE FROM Report WHERE id = %s", (id,))
+        cursor.execute("DELETE FROM reports WHERE id = %s", (id,))
         conn.commit()
 
         return jsonify({'message': 'Report deleted successfully'}), 200
@@ -150,66 +150,3 @@ def delete_report(id):
     finally:
         cursor.close()
         fechar_conexao(conn)
-
-
-# @reports_bp.route('/list/grouped', methods=['GET'])
-# def list_grouped_reports():
-#     conn = criar_conexao()
-#     cursor = conn.cursor(cursor_factory=RealDictCursor)
-    
-#     try:
-#         cursor.execute("SELECT * FROM reports")
-#         reports = cursor.fetchall()
-        
-#         if not reports:
-#             return jsonify({'message': 'No reports found', 'content': []}), 200
-        
-#         # Extraindo títulos e conteúdos para o agrupamento
-#         documents = [f"{report['titulo']} {report['conteudo']}" for report in reports]
-
-#         # Vetorização
-#         stop_words_portuguese = ['e', 'a', 'o', 'que', 'de', 'do', 'da', 'em', 'um', 'para', 'com', 'no', 'pro', 'pra']  # Adicione mais conforme necessário
-#         vectorizer = TfidfVectorizer(stop_words=stop_words_portuguese)
-#         X = vectorizer.fit_transform(documents)
-
-#         # Agrupamento
-#         num_clusters = min(3, len(reports))  # Ajusta o número de clusters para o número de relatórios
-#         kmeans = KMeans(n_clusters=num_clusters, random_state=0)
-#         kmeans.fit(X)
-
-#         # Adicionando o cluster a cada reclamação
-#         for i, report in enumerate(reports):
-#             report['cluster'] = int(kmeans.labels_[i])  # Armazenando como inteiro
-
-#         # Extraindo os principais tópicos
-#         def get_top_keywords(cluster, n_terms=5):
-#             order_centroids = cluster.cluster_centers_.argsort()[:, ::-1]
-#             terms = vectorizer.get_feature_names_out()
-#             top_terms = []
-#             for i in range(cluster.n_clusters):
-#                 top_terms.append([terms[ind] for ind in order_centroids[i, :n_terms]])
-#             return top_terms
-
-#         top_keywords = get_top_keywords(kmeans)
-
-#         # Estruturando a resposta
-#         grouped_reports = {
-#             "groups": [],
-#             "topics": {}
-#         }
-
-#         for i in range(num_clusters):
-#             group = [report for report in reports if report['cluster'] == i]
-#             grouped_reports['groups'].append({
-#                 "cluster_id": i,
-#                 "reports": group,
-#                 "topics": top_keywords[i]
-#             })
-
-#         return jsonify(grouped_reports), 200
-        
-#     except Exception as err:
-#         return jsonify({'error': str(err)}), 500
-#     finally:
-#         cursor.close()
-#         fechar_conexao(conn)
