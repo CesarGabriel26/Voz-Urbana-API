@@ -107,12 +107,12 @@ class Report:
 
 class Petition:
     def __init__(
-    self, user_id, titulo, content, signatures=0, required_signatures=100, 
-    aberto=False, data=None, data_limite=None, data_conclusao=None, 
-    status=0, motivo_encerramento=None, local=None, 
-    categoria=None, total_apoios=0, data_ultima_atualizacao=None, 
-    petition_id=None
-):
+        self, user_id, titulo, content, signatures=0, required_signatures=100, 
+        aberto=False, data=None, data_limite=None, data_conclusao=None, 
+        status=0, motivo_encerramento=None, local=None, 
+        categoria=None, apoiadores=None, data_ultima_atualizacao=None, 
+        petition_id=None
+    ):
         self.id = petition_id
         self.user_id = user_id
         self.titulo = titulo
@@ -127,14 +127,14 @@ class Petition:
         self.motivo_encerramento = motivo_encerramento
         self.local = local
         self.categoria = categoria
-        self.total_apoios = total_apoios
+        self.apoiadores = apoiadores if apoiadores is not None else []  # Lista vazia por padrão
         self.data_ultima_atualizacao = data_ultima_atualizacao
 
     def to_dict(self):
         return {
             'id': self.id,
-            'titulo' : self.titulo,
             'user_id': self.user_id,
+            'titulo': self.titulo,
             'content': self.content,
             'signatures': self.signatures,
             'required_signatures': self.required_signatures,
@@ -146,7 +146,7 @@ class Petition:
             'motivo_encerramento': self.motivo_encerramento,
             'local': self.local,
             'categoria': self.categoria,
-            'total_apoios': self.total_apoios,
+            'apoiadores': self.apoiadores,  # Campo atualizado
             'data_ultima_atualizacao': self.data_ultima_atualizacao
         }
 
@@ -157,7 +157,7 @@ class Petition:
             titulo=data['titulo'],
             content=data['content'],
             signatures=data.get('signatures', 0),
-            required_signatures=data.get('required_signatures', 1000),
+            required_signatures=data.get('required_signatures', 100),
             aberto=data.get('aberto', False),
             data=data.get('data'),
             data_limite=data.get('data_limite'),
@@ -166,7 +166,7 @@ class Petition:
             motivo_encerramento=data.get('motivo_encerramento'),
             local=data.get('local'),
             categoria=data.get('categoria'),
-            total_apoios=data.get('total_apoios', 0),
+            apoiadores=data.get('apoiadores', []),  # Define uma lista vazia se não houver dados
             data_ultima_atualizacao=data.get('data_ultima_atualizacao'),
             petition_id=data.get('id')
         )

@@ -339,7 +339,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    # Definir status inicial e verificar data_limite\n    status_inicial = 0  # 0 = 'Criada'\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro\n    try:\n        cursor.execute(",
+        "peekOfCode": "def nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro\n    try:\n        cursor.execute(\n            \"\"\"\n            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local)",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -375,7 +375,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def update_peticao(id):\n    data = request.get_json()\n    updated_petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se a petição existe\n        cursor.execute(\"SELECT * FROM petitions WHERE id = %s\", (id,))\n        existing_petition = cursor.fetchone()\n        if not existing_petition:",
+        "peekOfCode": "def update_peticao(id):\n    data = request.get_json()\n    updated_petition = Petition.from_dict(data)\n    updated_data = updated_petition.to_dict()\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se a petição existe\n        cursor.execute(\"SELECT * FROM petitions WHERE id = %s\", (id,))\n        existing_petition = cursor.fetchone()",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -411,7 +411,7 @@
         "kind": 2,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "def check_timer(petition_id):\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            # Busca a petição pelo ID, apenas se estiver aberta\n            cursor.execute(\"SELECT data_limite FROM petitions WHERE id = %s AND aberto = TRUE\", (petition_id,))\n            result = cursor.fetchone()\n            if not result:\n                return jsonify({'error': 'Petition not found or not open'}), 404\n            data_limite = result[0]",
+        "peekOfCode": "def check_timer(petition_id):\n    conn = criar_conexao()\n    try:\n        with conn.cursor() as cursor:\n            # Busca a petição pelo ID, apenas se estiver aberta\n            cursor.execute(\"SELECT data_limite FROM petitions WHERE id = %s \", (petition_id,))\n            result = cursor.fetchone()\n            if not result:\n                return jsonify({'error': 'Petition not found or not open'}), 404\n            data_limite = result[0]",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -420,7 +420,7 @@
         "kind": 5,
         "importPath": "routes.abaixo_assinados",
         "description": "routes.abaixo_assinados",
-        "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    # Definir status inicial e verificar data_limite\n    status_inicial = 0  # 0 = 'Criada'\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro",
+        "peekOfCode": "petitions_bp = Blueprint('peticoes', __name__)\n@petitions_bp.route('/create', methods=['POST'])\ndef nova_peticao():\n    data = request.get_json()\n    petition = Petition.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    data_limite = petition.data_limite if petition.data_limite else (datetime.now() + timedelta(days=30))  # Exemplo: 30 dias no futuro\n    try:\n        cursor.execute(",
         "detail": "routes.abaixo_assinados",
         "documentation": {}
     },
@@ -681,7 +681,7 @@
         "kind": 6,
         "importPath": "models",
         "description": "models",
-        "peekOfCode": "class Petition:\n    def __init__(\n    self, user_id, title, content, signatures=0, required_signatures=100, \n    aberto=False, data=None, data_limite=None, data_conclusao=None, \n    status=0, causa=None, motivo_encerramento=None, local=None, \n    categoria=None, total_apoios=0, data_ultima_atualizacao=None, \n    petition_id=None\n):\n        self.id = petition_id\n        self.user_id = user_id",
+        "peekOfCode": "class Petition:\n    def __init__(\n        self, user_id, titulo, content, signatures=0, required_signatures=100, \n        aberto=False, data=None, data_limite=None, data_conclusao=None, \n        status=0, motivo_encerramento=None, local=None, \n        categoria=None, apoiadores=None, data_ultima_atualizacao=None, \n        petition_id=None\n    ):\n        self.id = petition_id\n        self.user_id = user_id",
         "detail": "models",
         "documentation": {}
     }

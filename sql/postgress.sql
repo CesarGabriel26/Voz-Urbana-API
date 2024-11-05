@@ -42,11 +42,10 @@ CREATE TABLE petitions (
     data_limite TIMESTAMP NOT NULL,
     data_conclusao TIMESTAMP,
     status INT DEFAULT 0,
-    causa TEXT,
     motivo_encerramento TEXT,
     local VARCHAR(100),
     categoria VARCHAR(50),
-    total_apoios INT DEFAULT 0,
+    apoiadores INT[] DEFAULT {},
     data_ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE

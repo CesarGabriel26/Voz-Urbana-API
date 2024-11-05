@@ -97,11 +97,12 @@ def get_petitions_by_user(user_id):
         cursor.close()
         fechar_conexao(conn)
 
-@petitions_bp.route('/update/<int:id>', methods=['PUT'])
+@petitions_bp.route('/update/<int:id>', methods=['POST'])
 def update_peticao(id):
     data = request.get_json()
     updated_petition = Petition.from_dict(data)
-    
+    updated_data = updated_petition.to_dict()
+
     conn = criar_conexao()
     cursor = conn.cursor()
 
@@ -113,24 +114,23 @@ def update_peticao(id):
         if not existing_petition:
             return jsonify({'error': 'Petition not found'}), 404
 
-        # Atualizar a petição
-        cursor.execute(""" 
-            UPDATE petitions 
-            SET user_id = %s, titulo = %s, content = %s, signatures = %s, required_signatures = %s, 
-                aberto = %s, data_limite = %s, local = %s, categoria = %s 
-            WHERE id = %s
-        """, (
-            updated_petition.user_id,
-            updated_petition.title,
-            updated_petition.content,
-            updated_petition.signatures,
-            updated_petition.required_signatures,
-            updated_petition.aberto,
-            updated_petition.data_limite,
-            updated_petition.local,
-            updated_petition.categoria,
-            id
-        ))
+        # Preparar query dinâmica
+        fields = []
+        values = []
+
+        for column, value in updated_data.items():
+            if value is not None and column != 'id':  # Ignorar campos nulos e 'id'
+                fields.append(f"{column} = %s")
+                values.append(value)
+
+        # Adicionar o 'id' ao final para a cláusula WHERE
+        values.append(id)
+
+        # Montar query final
+        query = f"UPDATE petitions SET {', '.join(fields)} WHERE id = %s"
+        
+        # Executar a query
+        cursor.execute(query, values)
         
         conn.commit()
 
