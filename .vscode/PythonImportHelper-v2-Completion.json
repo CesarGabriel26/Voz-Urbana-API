@@ -492,7 +492,7 @@
         "kind": 2,
         "importPath": "routes.reports",
         "description": "routes.reports",
-        "peekOfCode": "def update_report(id):\n    data = request.get_json()\n    updated_report = Report.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o report existe\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        existing_report = cursor.fetchone()\n        if not existing_report:",
+        "peekOfCode": "def update_report(id):\n    data = request.get_json()\n    updated_report = Report.from_dict(data)\n    updated_data = updated_report.to_dict()\n    conn = criar_conexao()\n    cursor = conn.cursor()\n    try:\n        # Verificar se o report existe\n        cursor.execute(\"SELECT * FROM reports WHERE id = %s\", (id,))\n        existing_report = cursor.fetchone()",
         "detail": "routes.reports",
         "documentation": {}
     },

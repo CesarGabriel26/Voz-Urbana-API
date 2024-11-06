@@ -96,6 +96,7 @@ def get_reports_by_user(user_id):
 def update_report(id):
     data = request.get_json()
     updated_report = Report.from_dict(data)
+    updated_data = updated_report.to_dict()
     
     conn = criar_conexao()
     cursor = conn.cursor()
@@ -108,15 +109,23 @@ def update_report(id):
         if not existing_report:
             return jsonify({'error': 'Report not found'}), 404
 
-        # Atualizar o report
-        cursor.execute(
-            """
-                UPDATE reports
-                SET titulo = %s, conteudo = %s, data = %s, aceito = %s
-                WHERE id = %s
-            """, 
-            (updated_report.titulo, updated_report.conteudo, updated_report.data, updated_report.aceito, id)
-        )
+        # Preparar query dinâmica
+        fields = []
+        values = []
+
+        for column, value in updated_data.items():
+            if value is not None and column != 'id':  # Ignorar campos nulos e 'id'
+                fields.append(f"{column} = %s")
+                values.append(value)
+
+        # Adicionar o 'id' ao final para a cláusula WHERE
+        values.append(id)
+
+        # Montar query final
+        query = f"UPDATE reports SET {', '.join(fields)} WHERE id = %s"
+        
+        # Executar a query
+        cursor.execute(query, values)
         
         conn.commit()
 
