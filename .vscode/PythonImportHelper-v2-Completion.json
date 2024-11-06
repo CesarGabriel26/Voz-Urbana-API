@@ -564,7 +564,7 @@
         "kind": 2,
         "importPath": "routes.usuario",
         "description": "routes.usuario",
-        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()\n        if not existing_user:\n            return jsonify({'error': 'User not found'}), 404",
+        "peekOfCode": "def update_usuario(id):\n    data = request.get_json()\n    updated_user = User.from_dict(data)\n    updated_user.id = id  # Garante que o ID seja atribuído\n    conn = criar_conexao()\n    cursor = conn.cursor(cursor_factory=RealDictCursor)\n    try:\n        # Verificar se o usuário existe antes de atualizar\n        cursor.execute(\"SELECT * FROM usuarios WHERE id = %s\", (id,))\n        existing_user = cursor.fetchone()",
         "detail": "routes.usuario",
         "documentation": {}
     },
