@@ -48,14 +48,6 @@
         "documentation": {}
     },
     {
-        "label": "request",
-        "importPath": "flask",
-        "description": "flask",
-        "isExtraImport": true,
-        "detail": "flask",
-        "documentation": {}
-    },
-    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -429,7 +421,7 @@
         "kind": 2,
         "importPath": "routes.imagem",
         "description": "routes.imagem",
-        "peekOfCode": "def upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Obtém o nome do arquivo\n        nome_arquivo = arquivo.filename\n        # Usa o método put da biblioteca vercel_blob para enviar a imagem\n        data_imagem = vercel_blob.put(nome_arquivo, arquivo.read(), {})  # Envia o arquivo para o Blob\n        return jsonify({\"message\": \"success\", \"content\": data_imagem}), 200",
+        "peekOfCode": "def upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Verifica o tipo do arquivo\n        if not arquivo.mimetype.startswith('image'):\n            return jsonify({\"error\": \"O arquivo enviado não é uma imagem válida\"}), 400\n        nome_arquivo = arquivo.filename\n        # Usa o método put da biblioteca vercel_blob para enviar a imagem",
         "detail": "routes.imagem",
         "documentation": {}
     },
@@ -447,7 +439,7 @@
         "kind": 5,
         "importPath": "routes.imagem",
         "description": "routes.imagem",
-        "peekOfCode": "imagem_bp = Blueprint('imagem', __name__)\n@imagem_bp.route('/upload', methods=['POST'])\ndef upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Obtém o nome do arquivo\n        nome_arquivo = arquivo.filename\n        # Usa o método put da biblioteca vercel_blob para enviar a imagem",
+        "peekOfCode": "imagem_bp = Blueprint('imagem', __name__)\n@imagem_bp.route('/upload', methods=['POST'])\ndef upload_imagem():\n    arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'\n    if not arquivo:\n        return jsonify({\"error\": \"Nenhuma imagem fornecida\"}), 400\n    try:\n        # Verifica o tipo do arquivo\n        if not arquivo.mimetype.startswith('image'):\n            return jsonify({\"error\": \"O arquivo enviado não é uma imagem válida\"}), 400",
         "detail": "routes.imagem",
         "documentation": {}
     },

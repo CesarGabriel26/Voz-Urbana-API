@@ -15,7 +15,6 @@ def novo_report():
     # Verifique se user_id está presente
     if 'user_id' not in data:
         return jsonify({'error': 'user_id is required'}), 400
-
     report = Report.from_dict(data)
     
     conn = criar_conexao()

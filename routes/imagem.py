@@ -7,23 +7,25 @@ imagem_bp = Blueprint('imagem', __name__)
 @imagem_bp.route('/upload', methods=['POST'])
 def upload_imagem():
     arquivo = request.files.get('imagem')  # Supondo que a imagem está no campo 'imagem'
-    
+
     if not arquivo:
         return jsonify({"error": "Nenhuma imagem fornecida"}), 400
-    
+
     try:
-        # Obtém o nome do arquivo
-        nome_arquivo = arquivo.filename
+        # Verifica o tipo do arquivo
+        if not arquivo.mimetype.startswith('image'):
+            return jsonify({"error": "O arquivo enviado não é uma imagem válida"}), 400
         
+        nome_arquivo = arquivo.filename
+
         # Usa o método put da biblioteca vercel_blob para enviar a imagem
         data_imagem = vercel_blob.put(nome_arquivo, arquivo.read(), {})  # Envia o arquivo para o Blob
 
         return jsonify({"message": "success", "content": data_imagem}), 200
-        
+
     except Exception as e:
         return jsonify({"error": "Erro ao processar a imagem: " + str(e)}), 500
 
-from flask import request
 
 @imagem_bp.route('/delete', methods=['POST'])  # Mudado para POST
 def delete_imagem():
