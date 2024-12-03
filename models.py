@@ -1,4 +1,4 @@
-import jwt
+from jwt import encode
 import os
 
 class User:
@@ -51,7 +51,7 @@ class User:
             'created_at': self.created_at.strftime('%Y-%m-%dT%H:%M:%S.%fZ') if self.created_at else None,
             'updated_at': self.updated_at.strftime('%Y-%m-%dT%H:%M:%S.%fZ') if self.updated_at else None
         }
-        token = jwt.encode(payload, os.getenv("JWT_KEY"), algorithm='HS256')
+        token = encode(payload, os.getenv("JWT_KEY"), algorithm='HS256')
         return token
 
 class Report:

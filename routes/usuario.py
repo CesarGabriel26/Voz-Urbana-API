@@ -46,10 +46,12 @@ def login():
         if user_data and bcrypt.checkpw(senha.encode('utf-8'), user_data['senha'].encode('utf-8')):
             user = User.from_dict(user_data)
             token = user.gerar_token()
+            
             return jsonify({'message': 'Usuario Encontrado', 'content': token}), 200
         else:
             return jsonify({'error': 'Email ou Senha incorretos'}), 401
     except Exception as err:
+        print(str(err))
         return jsonify({'error': str(err)}), 500
     finally:
         cursor.close()

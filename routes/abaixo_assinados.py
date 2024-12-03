@@ -19,8 +19,8 @@ def nova_peticao():
     try:
         cursor.execute(
             """
-            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO petitions (user_id, titulo, content, required_signatures, data_limite, local, categoria)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 petition.user_id,
@@ -28,7 +28,8 @@ def nova_peticao():
                 petition.content,
                 petition.required_signatures,
                 data_limite,
-                petition.local
+                petition.local,
+                petition.categoria
             )
         )
         conn.commit()
@@ -96,12 +97,14 @@ def get_petitions_by_user(user_id):
     finally:
         cursor.close()
         fechar_conexao(conn)
-
+            
 @petitions_bp.route('/update/<int:id>', methods=['POST'])
 def update_peticao(id):
     data = request.get_json()
+    
     updated_petition = Petition.from_dict(data)
     updated_data = updated_petition.to_dict()
+    print(updated_data)
 
     conn = criar_conexao()
     cursor = conn.cursor()

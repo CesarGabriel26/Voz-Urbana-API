@@ -19,11 +19,21 @@ def novo_report():
     
     conn = criar_conexao()
     cursor = conn.cursor()
-    
+    print(report.to_dict())
     try:
         cursor.execute(
-            "INSERT INTO reports (user_id, latitude, longitude, titulo, conteudo, imagem, data, adress) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            (report.user_id, report.latitude, report.longitude, report.titulo, report.conteudo, report.imagem, report.data, report.adress)
+            "INSERT INTO reports (user_id, latitude, longitude, titulo, conteudo, imagem, data, adress, categoria) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (
+                report.user_id, 
+                report.latitude, 
+                report.longitude, 
+                report.titulo, 
+                report.conteudo, 
+                report.imagem, 
+                report.data, 
+                report.adress,
+                report.categoria,
+             )
         )
         conn.commit()
         
